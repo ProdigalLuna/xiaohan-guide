@@ -1,0 +1,27 @@
+name: deploy static site
+
+on:
+  push:
+    paths:
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch site package
+        run: curl -fsSL -o /tmp/app.zip "https://aka.doubaocdn.com/s/8pcFkSBe1B"
+      - name: Unzip
+        run: unzip -o /tmp/app.zip -d .
+      - name: Commit
+        run: |
+          git config user.name "import-bot"
+          git config user.email "import-bot@users.noreply.github.com"
+          git add -A
+          git commit -m "deploy static site" || echo "no changes"
+          git push
