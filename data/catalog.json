@@ -1,0 +1,2369 @@
+[
+  {
+    "id": "mi15",
+    "category": "手机",
+    "brand": "小米",
+    "brandTier": "popular",
+    "name": "小米 15",
+    "price": 4499,
+    "rating": 98.6,
+    "sales": 128000,
+    "tags": [
+      "小屏旗舰",
+      "徕卡影像",
+      "旗舰芯",
+      "口碑好"
+    ],
+    "highlights": [
+      "小屏手感一流，单手可握",
+      "徕卡调校，人像出片率高",
+      "5400mAh 大电池 + 90W 快充"
+    ],
+    "audience": "喜欢小屏手感、注重拍照的都市用户",
+    "scenes": [
+      "拍照",
+      "小屏",
+      "续航",
+      "游戏"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "骁龙 8 至尊版",
+      "屏幕": "6.36 英寸 1.5K 直屏",
+      "电池": "5400mAh",
+      "快充": "90W 有线 / 50W 无线",
+      "影像": "5000 万徕卡三摄 + 长焦",
+      "重量": "191g",
+      "存储": "12+256GB",
+      "系统": "HyperOS 2"
+    },
+    "color": "#ff6900",
+    "color2": "#ffb26b",
+    "origin": "seed"
+  },
+  {
+    "id": "mi15pro",
+    "category": "手机",
+    "brand": "小米",
+    "brandTier": "popular",
+    "name": "小米 15 Pro",
+    "price": 5799,
+    "rating": 97.8,
+    "sales": 86000,
+    "tags": [
+      "影像旗舰",
+      "潜望长焦",
+      "2K 大屏",
+      "高端"
+    ],
+    "highlights": [
+      "2K 微曲屏 + 6100mAh 大电池",
+      "潜望长焦，远景拍摄更清晰",
+      "顶配性能，重度游戏稳帧"
+    ],
+    "audience": "预算充足、要影像和屏幕都拉满的用户",
+    "scenes": [
+      "拍照",
+      "大屏",
+      "续航",
+      "游戏"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "骁龙 8 至尊版",
+      "屏幕": "6.73 英寸 2K 微曲屏",
+      "电池": "6100mAh",
+      "快充": "90W 有线 / 50W 无线",
+      "影像": "徕卡全焦段四摄 + 潜望长焦",
+      "重量": "213g",
+      "存储": "16+512GB",
+      "系统": "HyperOS 2"
+    },
+    "color": "#ff6900",
+    "color2": "#e0452b",
+    "origin": "seed"
+  },
+  {
+    "id": "mi14",
+    "category": "手机",
+    "brand": "小米",
+    "brandTier": "popular",
+    "name": "小米 14",
+    "price": 3299,
+    "rating": 97.2,
+    "sales": 210000,
+    "tags": [
+      "上代旗舰",
+      "小屏",
+      "降价真香",
+      "徕卡"
+    ],
+    "highlights": [
+      "上代旗舰清仓，价格直降千元",
+      "小屏 + 徕卡影像依旧能打",
+      "188g 轻巧，久握不累"
+    ],
+    "audience": "想用中端价格体验旗舰影像的用户",
+    "scenes": [
+      "拍照",
+      "小屏",
+      "性价比"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "骁龙 8 Gen3",
+      "屏幕": "6.36 英寸 1.5K 直屏",
+      "电池": "4610mAh",
+      "快充": "90W 有线",
+      "影像": "5000 万徕卡三摄",
+      "重量": "188g",
+      "存储": "12+256GB",
+      "系统": "HyperOS 2"
+    },
+    "color": "#ff6900",
+    "color2": "#c94f1a",
+    "origin": "seed"
+  },
+  {
+    "id": "k80",
+    "category": "手机",
+    "brand": "小米",
+    "brandTier": "popular",
+    "name": "Redmi K80",
+    "price": 2499,
+    "rating": 96.5,
+    "sales": 560000,
+    "tags": [
+      "性能怪兽",
+      "性价比之王",
+      "2K 屏",
+      "学生党"
+    ],
+    "highlights": [
+      "2499 元买到旗舰芯 + 2K 屏",
+      "6550mAh 大电池，两天一充",
+      "销量口碑双高，闭眼买不易错"
+    ],
+    "audience": "预算 2500 左右、要性能和续航的学生党",
+    "scenes": [
+      "性价比",
+      "游戏",
+      "续航",
+      "大屏"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "骁龙 8 Gen3",
+      "屏幕": "6.67 英寸 2K 直屏",
+      "电池": "6550mAh",
+      "快充": "90W 有线",
+      "影像": "5000 万主摄 + 超广角",
+      "重量": "206g",
+      "存储": "12+256GB",
+      "系统": "HyperOS 2"
+    },
+    "color": "#ff6900",
+    "color2": "#a83b12",
+    "origin": "seed"
+  },
+  {
+    "id": "turbo4",
+    "category": "手机",
+    "brand": "小米",
+    "brandTier": "popular",
+    "name": "Redmi Turbo 4",
+    "price": 1999,
+    "rating": 95.8,
+    "sales": 430000,
+    "tags": [
+      "千元价位",
+      "超长续航",
+      "入门首选"
+    ],
+    "highlights": [
+      "2000 元档，7550mAh 巨电池",
+      "日常使用流畅，性价比拉满",
+      "适合作为备用机或学生机"
+    ],
+    "audience": "预算有限、看重续航和实用性的用户",
+    "scenes": [
+      "性价比",
+      "续航",
+      "学生"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "天玑 8400-Ultra",
+      "屏幕": "6.67 英寸 1.5K 直屏",
+      "电池": "7550mAh",
+      "快充": "90W 有线",
+      "影像": "5000 万主摄",
+      "重量": "203g",
+      "存储": "12+256GB",
+      "系统": "HyperOS 2"
+    },
+    "color": "#ff6900",
+    "color2": "#8a2f0e",
+    "origin": "seed"
+  },
+  {
+    "id": "mixflip",
+    "category": "手机",
+    "brand": "小米",
+    "brandTier": "popular",
+    "name": "小米 MIX Flip",
+    "price": 5999,
+    "rating": 96.9,
+    "sales": 52000,
+    "tags": [
+      "小折叠",
+      "时尚",
+      "女性向",
+      "拍照"
+    ],
+    "highlights": [
+      "口袋小折叠，颜值担当",
+      "外屏可自拍取景，拍照更方便",
+      "轻至 192g，折叠里算轻的"
+    ],
+    "audience": "追求时尚外观与便携的用户",
+    "scenes": [
+      "折叠",
+      "拍照",
+      "轻薄"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "骁龙 8 Gen3",
+      "屏幕": "6.86 英寸内屏 + 4.01 英寸外屏",
+      "电池": "4780mAh",
+      "快充": "67W 有线",
+      "影像": "5000 万徕卡双摄",
+      "重量": "192g",
+      "存储": "12+512GB",
+      "系统": "HyperOS 2"
+    },
+    "color": "#ff6900",
+    "color2": "#7d3cff",
+    "origin": "seed"
+  },
+  {
+    "id": "ip16",
+    "category": "手机",
+    "brand": "苹果",
+    "brandTier": "luxury",
+    "name": "iPhone 16",
+    "price": 5999,
+    "rating": 97.5,
+    "sales": 320000,
+    "tags": [
+      "生态流畅",
+      "小巧轻便",
+      "拍照色彩准",
+      "保值"
+    ],
+    "highlights": [
+      "170g 轻巧，单手握持舒服",
+      "iOS 生态流畅，五年不卡",
+      "相机色彩真实，视频防抖强"
+    ],
+    "audience": "习惯 iOS 生态、重视流畅度和小巧手感的用户",
+    "scenes": [
+      "小屏",
+      "系统",
+      "轻薄",
+      "拍照"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "A18",
+      "屏幕": "6.1 英寸 超视网膜 XDR",
+      "电池": "3561mAh",
+      "快充": "20W 有线 / MagSafe 无线",
+      "影像": "4800 万主摄 + 超广角",
+      "重量": "170g",
+      "存储": "128GB",
+      "系统": "iOS 18"
+    },
+    "color": "#111111",
+    "color2": "#6b7280",
+    "origin": "seed"
+  },
+  {
+    "id": "ip16pro",
+    "category": "手机",
+    "brand": "苹果",
+    "brandTier": "luxury",
+    "name": "iPhone 16 Pro",
+    "price": 7999,
+    "rating": 98.1,
+    "sales": 260000,
+    "tags": [
+      "专业影像",
+      "钛金属",
+      "高刷",
+      "高端商务"
+    ],
+    "highlights": [
+      "5 倍潜望长焦 + 4K120 视频",
+      "A18 Pro 性能天花板，游戏稳",
+      "钛金属边框，商务质感"
+    ],
+    "audience": "预算充足、要影像和性能都顶配的用户",
+    "scenes": [
+      "拍照",
+      "游戏",
+      "系统",
+      "商务"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "A18 Pro",
+      "屏幕": "6.3 英寸 120Hz ProMotion",
+      "电池": "3582mAh",
+      "快充": "20W 有线 / MagSafe 无线",
+      "影像": "4800 万三摄 + 5 倍长焦",
+      "重量": "199g",
+      "存储": "256GB",
+      "系统": "iOS 18"
+    },
+    "color": "#111111",
+    "color2": "#8b7355",
+    "origin": "seed"
+  },
+  {
+    "id": "ip15",
+    "category": "手机",
+    "brand": "苹果",
+    "brandTier": "luxury",
+    "name": "iPhone 15",
+    "price": 4699,
+    "rating": 96.8,
+    "sales": 480000,
+    "tags": [
+      "降价真香",
+      "生态入门",
+      "小巧",
+      "保值"
+    ],
+    "highlights": [
+      "降至 4699，iOS 入门好选择",
+      "灵动岛 + 4800 万主摄",
+      "保值率高，二手也好出手"
+    ],
+    "audience": "想低价进入苹果生态的用户",
+    "scenes": [
+      "小屏",
+      "系统",
+      "性价比",
+      "轻薄"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "A16",
+      "屏幕": "6.1 英寸 超视网膜 XDR",
+      "电池": "3349mAh",
+      "快充": "20W 有线",
+      "影像": "4800 万主摄 + 超广角",
+      "重量": "171g",
+      "存储": "128GB",
+      "系统": "iOS 18"
+    },
+    "color": "#111111",
+    "color2": "#9aa3af",
+    "origin": "seed"
+  },
+  {
+    "id": "ip16plus",
+    "category": "手机",
+    "brand": "苹果",
+    "brandTier": "luxury",
+    "name": "iPhone 16 Plus",
+    "price": 6999,
+    "rating": 96.4,
+    "sales": 120000,
+    "tags": [
+      "大屏",
+      "长续航",
+      "生态"
+    ],
+    "highlights": [
+      "6.7 英寸大屏，追剧爽",
+      "4674mAh 续航在 iPhone 里最强",
+      "iOS 生态 + 大屏组合"
+    ],
+    "audience": "喜欢大屏、看重续航的苹果用户",
+    "scenes": [
+      "大屏",
+      "续航",
+      "系统"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "A18",
+      "屏幕": "6.7 英寸 超视网膜 XDR",
+      "电池": "4674mAh",
+      "快充": "20W 有线 / MagSafe 无线",
+      "影像": "4800 万主摄 + 超广角",
+      "重量": "199g",
+      "存储": "128GB",
+      "系统": "iOS 18"
+    },
+    "color": "#111111",
+    "color2": "#5b8def",
+    "origin": "seed"
+  },
+  {
+    "id": "mate70",
+    "category": "手机",
+    "brand": "华为",
+    "brandTier": "luxury",
+    "name": "华为 Mate 70",
+    "price": 5499,
+    "rating": 98.3,
+    "sales": 240000,
+    "tags": [
+      "商务标杆",
+      "鸿蒙",
+      "信号强",
+      "质感"
+    ],
+    "highlights": [
+      "鸿蒙 NEXT 流畅且安全",
+      "信号与通话质量出色",
+      "商务场合气场足，拿得出手"
+    ],
+    "audience": "商务人士、重视信号与系统安全的用户",
+    "scenes": [
+      "商务",
+      "拍照",
+      "续航",
+      "信号"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "麒麟 9020",
+      "屏幕": "6.7 英寸 1.5K 直屏",
+      "电池": "5200mAh",
+      "快充": "66W 有线 / 50W 无线",
+      "影像": "红枫原色三摄",
+      "重量": "203g",
+      "存储": "12+256GB",
+      "系统": "HarmonyOS NEXT"
+    },
+    "color": "#c8102e",
+    "color2": "#7a1020",
+    "origin": "seed"
+  },
+  {
+    "id": "nova13",
+    "category": "手机",
+    "brand": "华为",
+    "brandTier": "luxury",
+    "name": "华为 nova 13",
+    "price": 2699,
+    "rating": 96.1,
+    "sales": 310000,
+    "tags": [
+      "自拍神器",
+      "轻薄",
+      "高颜值",
+      "学生党"
+    ],
+    "highlights": [
+      "6000 万前置，自拍清晰",
+      "180g 轻薄高颜值",
+      "100W 快充，回血快"
+    ],
+    "audience": "爱自拍、注重手感和颜值的年轻用户",
+    "scenes": [
+      "自拍",
+      "轻薄",
+      "性价比"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "骁龙 7 Gen3",
+      "屏幕": "6.7 英寸 1.5K 曲面屏",
+      "电池": "5000mAh",
+      "快充": "100W 有线",
+      "影像": "6000 万前置 + 双摄后置",
+      "重量": "180g",
+      "存储": "12+256GB",
+      "系统": "HarmonyOS"
+    },
+    "color": "#c8102e",
+    "color2": "#f08fa0",
+    "origin": "seed"
+  },
+  {
+    "id": "pura70",
+    "category": "手机",
+    "brand": "华为",
+    "brandTier": "luxury",
+    "name": "华为 Pura 70",
+    "price": 4999,
+    "rating": 97.4,
+    "sales": 190000,
+    "tags": [
+      "影像旗舰",
+      "长焦",
+      "鸿蒙"
+    ],
+    "highlights": [
+      "超聚光主摄，夜景能力强",
+      "潜望长焦，拍远也清楚",
+      "鸿蒙生态互联方便"
+    ],
+    "audience": "华为生态用户中的摄影爱好者",
+    "scenes": [
+      "拍照",
+      "商务",
+      "续航"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "麒麟 9010",
+      "屏幕": "6.6 英寸 1.5K 直屏",
+      "电池": "4900mAh",
+      "快充": "66W 有线 / 50W 无线",
+      "影像": "5000 万超聚光主摄 + 潜望",
+      "重量": "207g",
+      "存储": "12+256GB",
+      "系统": "HarmonyOS 4.2"
+    },
+    "color": "#c8102e",
+    "color2": "#de5b6d",
+    "origin": "seed"
+  },
+  {
+    "id": "magic7",
+    "category": "手机",
+    "brand": "荣耀",
+    "brandTier": "popular",
+    "name": "荣耀 Magic 7",
+    "price": 4499,
+    "rating": 97.1,
+    "sales": 150000,
+    "tags": [
+      "护眼屏",
+      "长焦",
+      "AI 助手",
+      "均衡"
+    ],
+    "highlights": [
+      "AI 护眼屏，长时间看更舒服",
+      "5650mAh + 100W 快充",
+      "长焦人像讨喜，拍照均衡"
+    ],
+    "audience": "看重护眼、续航与均衡体验的用户",
+    "scenes": [
+      "拍照",
+      "续航",
+      "大屏",
+      "办公"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "骁龙 8 至尊版",
+      "屏幕": "6.78 英寸 1.5K 护眼屏",
+      "电池": "5650mAh",
+      "快充": "100W 有线 / 50W 无线",
+      "影像": "5000 万三摄 + 潜望长焦",
+      "重量": "199g",
+      "存储": "12+256GB",
+      "系统": "MagicOS 9"
+    },
+    "color": "#1e3a8a",
+    "color2": "#60a5fa",
+    "origin": "seed"
+  },
+  {
+    "id": "findx8",
+    "category": "手机",
+    "brand": "OPPO",
+    "brandTier": "popular",
+    "name": "OPPO Find X8",
+    "price": 4199,
+    "rating": 97.3,
+    "sales": 130000,
+    "tags": [
+      "哈苏影像",
+      "轻薄",
+      "大电池",
+      "人像"
+    ],
+    "highlights": [
+      "哈苏人像，肤色自然",
+      "193g 轻薄 + 5630mAh 大电池",
+      "天玑 9400 性能强，发热控制好"
+    ],
+    "audience": "喜欢拍人像、要轻薄和大电池的用户",
+    "scenes": [
+      "拍照",
+      "轻薄",
+      "续航",
+      "游戏"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "天玑 9400",
+      "屏幕": "6.59 英寸 1.5K 直屏",
+      "电池": "5630mAh",
+      "快充": "80W 有线 / 50W 无线",
+      "影像": "哈苏三摄 + 双潜望",
+      "重量": "193g",
+      "存储": "12+256GB",
+      "系统": "ColorOS 15"
+    },
+    "color": "#0f766e",
+    "color2": "#34d399",
+    "origin": "seed"
+  },
+  {
+    "id": "x200",
+    "category": "手机",
+    "brand": "vivo",
+    "brandTier": "popular",
+    "name": "vivo X200",
+    "price": 4299,
+    "rating": 97.6,
+    "sales": 170000,
+    "tags": [
+      "蔡司影像",
+      "长焦",
+      "大电池",
+      "演唱会神器"
+    ],
+    "highlights": [
+      "蔡司长焦，拍演唱会一流",
+      "5800mAh 续航扎实",
+      "OriginOS 流畅度高"
+    ],
+    "audience": "爱拍远景、追演唱会与旅行的用户",
+    "scenes": [
+      "拍照",
+      "续航",
+      "大屏",
+      "游戏"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "天玑 9400",
+      "屏幕": "6.67 英寸 1.5K 直屏",
+      "电池": "5800mAh",
+      "快充": "90W 有线",
+      "影像": "蔡司三摄 + 潜望长焦",
+      "重量": "197g",
+      "存储": "12+256GB",
+      "系统": "OriginOS 5"
+    },
+    "color": "#1d4ed8",
+    "color2": "#38bdf8",
+    "origin": "seed"
+  },
+  {
+    "id": "oneplus13",
+    "category": "手机",
+    "brand": "一加",
+    "brandTier": "niche",
+    "name": "一加 13",
+    "price": 4499,
+    "rating": 97.9,
+    "sales": 98000,
+    "tags": [
+      "性能旗舰",
+      "2K 屏",
+      "散热强",
+      "游戏党"
+    ],
+    "highlights": [
+      "2K 东方屏 + 6000mAh",
+      "性能释放激进，游戏帧率稳",
+      "100W 快充，半小时回满"
+    ],
+    "audience": "重度游戏玩家与性能发烧友",
+    "scenes": [
+      "游戏",
+      "大屏",
+      "续航",
+      "性能"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "处理器": "骁龙 8 至尊版",
+      "屏幕": "6.82 英寸 2K 东方屏",
+      "电池": "6000mAh",
+      "快充": "100W 有线 / 50W 无线",
+      "影像": "哈苏三摄",
+      "重量": "210g",
+      "存储": "12+256GB",
+      "系统": "ColorOS 15"
+    },
+    "color": "#1e293b",
+    "color2": "#ef4444",
+    "origin": "seed"
+  },
+  {
+    "id": "s25",
+    "category": "手机",
+    "brand": "三星",
+    "brandTier": "luxury",
+    "name": "三星 Galaxy S25",
+    "price": 5999,
+    "rating": 95.9,
+    "sales": 45000,
+    "tags": [
+      "超轻",
+      "小屏",
+      "AI 功能",
+      "国际品牌"
+    ],
+    "highlights": [
+      "162g 超轻，握感极佳",
+      "One UI 功能丰富、可定制",
+      "AI 助手与翻译功能好用"
+    ],
+    "audience": "偏爱小屏轻巧与国际品牌的用户",
+    "scenes": [
+      "小屏",
+      "轻薄",
+      "系统"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "骁龙 8 至尊版 for Galaxy",
+      "屏幕": "6.2 英寸 120Hz 直屏",
+      "电池": "4000mAh",
+      "快充": "25W 有线 / 15W 无线",
+      "影像": "5000 万三摄",
+      "重量": "162g",
+      "存储": "12+256GB",
+      "系统": "One UI 7"
+    },
+    "color": "#0f172a",
+    "color2": "#64748b",
+    "origin": "seed"
+  },
+  {
+    "id": "mbp-air",
+    "category": "笔记本",
+    "brand": "苹果",
+    "brandTier": "luxury",
+    "name": "MacBook Air M3 13英寸",
+    "price": 7999,
+    "rating": 98,
+    "sales": 52000,
+    "tags": [
+      "轻薄",
+      "办公",
+      "长续航"
+    ],
+    "highlights": [
+      "M3 芯片，18 小时续航",
+      "1.24kg，无风扇静音"
+    ],
+    "audience": "移动办公与设计人群",
+    "scenes": [
+      "办公",
+      "轻薄",
+      "续航"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "Apple M3",
+      "屏幕": "13.6 英寸 Liquid 视网膜",
+      "重量": "1.24kg",
+      "续航": "约 18 小时"
+    },
+    "color": "#3a3f4b",
+    "color2": "#7d8497",
+    "origin": "seed"
+  },
+  {
+    "id": "lenovo-xiaoxin",
+    "category": "笔记本",
+    "brand": "联想",
+    "brandTier": "popular",
+    "name": "小新 Pro 16 2025",
+    "price": 5499,
+    "rating": 95,
+    "sales": 86000,
+    "tags": [
+      "性能",
+      "大屏",
+      "性价比"
+    ],
+    "highlights": [
+      "2.5K 165Hz 高刷屏",
+      "锐龙 7 处理器，整机 1.89kg"
+    ],
+    "audience": "学生与全能办公",
+    "scenes": [
+      "办公",
+      "游戏",
+      "性能"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "锐龙 7 8845H",
+      "屏幕": "16 英寸 2.5K 165Hz",
+      "重量": "1.89kg",
+      "续航": "约 8 小时"
+    },
+    "color": "#1f56c4",
+    "color2": "#6d94e8",
+    "origin": "seed"
+  },
+  {
+    "id": "matebook-xpro",
+    "category": "笔记本",
+    "brand": "华为",
+    "brandTier": "luxury",
+    "name": "MateBook X Pro 2025",
+    "price": 9999,
+    "rating": 97,
+    "sales": 21000,
+    "tags": [
+      "轻薄",
+      "商务",
+      "高奢"
+    ],
+    "highlights": [
+      "1.0kg 超轻机身",
+      "3.1K OLED 触控屏"
+    ],
+    "audience": "高端商务人士",
+    "scenes": [
+      "办公",
+      "轻薄",
+      "商务"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "酷睿 Ultra 7",
+      "屏幕": "14.2 英寸 3.1K OLED",
+      "重量": "1.0kg",
+      "续航": "约 10 小时"
+    },
+    "color": "#c8102e",
+    "color2": "#ff6b7f",
+    "origin": "seed"
+  },
+  {
+    "id": "dell-xps13",
+    "category": "笔记本",
+    "brand": "戴尔",
+    "brandTier": "popular",
+    "name": "XPS 13 Plus",
+    "price": 8999,
+    "rating": 94,
+    "sales": 18000,
+    "tags": [
+      "轻薄",
+      "商务"
+    ],
+    "highlights": [
+      "无边框键盘设计",
+      "13 代酷睿 + 2.8K 屏"
+    ],
+    "audience": "商务出差人群",
+    "scenes": [
+      "办公",
+      "轻薄"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "酷睿 i7-1360P",
+      "屏幕": "13.4 英寸 2.8K",
+      "重量": "1.26kg",
+      "续航": "约 9 小时"
+    },
+    "color": "#0b6bbd",
+    "color2": "#63a6de",
+    "origin": "seed"
+  },
+  {
+    "id": "rog-16",
+    "category": "笔记本",
+    "brand": "ROG",
+    "brandTier": "niche",
+    "name": "幻 16 星空版",
+    "price": 13999,
+    "rating": 96,
+    "sales": 9600,
+    "tags": [
+      "游戏",
+      "性能",
+      "大屏"
+    ],
+    "highlights": [
+      "RTX 4070 独显",
+      "2.5K 240Hz 电竞屏"
+    ],
+    "audience": "硬核游戏玩家",
+    "scenes": [
+      "游戏",
+      "性能"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "酷睿 i9-14900HX",
+      "显卡": "RTX 4070",
+      "屏幕": "16 英寸 2.5K 240Hz",
+      "重量": "1.9kg"
+    },
+    "color": "#c8102e",
+    "color2": "#ff6b7f",
+    "origin": "seed"
+  },
+  {
+    "id": "mec-rev",
+    "category": "笔记本",
+    "brand": "机械革命",
+    "brandTier": "economy",
+    "name": "极光 X 15",
+    "price": 4299,
+    "rating": 91,
+    "sales": 33000,
+    "tags": [
+      "性价比",
+      "游戏"
+    ],
+    "highlights": [
+      "RTX 4060 独显",
+      "144Hz 高刷"
+    ],
+    "audience": "预算有限的游戏用户",
+    "scenes": [
+      "游戏",
+      "性价比"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "酷睿 i7-13620H",
+      "显卡": "RTX 4060",
+      "屏幕": "15.6 英寸 144Hz",
+      "重量": "2.1kg"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "ipad-air",
+    "category": "平板",
+    "brand": "苹果",
+    "brandTier": "luxury",
+    "name": "iPad Air M2 11英寸",
+    "price": 4799,
+    "rating": 98,
+    "sales": 64000,
+    "tags": [
+      "大屏",
+      "办公",
+      "系统"
+    ],
+    "highlights": [
+      "M2 芯片，支持二代笔",
+      "10.9 英寸全面屏"
+    ],
+    "audience": "学生与轻办公",
+    "scenes": [
+      "办公",
+      "大屏",
+      "系统"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "Apple M2",
+      "屏幕": "11 英寸全面屏",
+      "重量": "462g",
+      "续航": "约 10 小时"
+    },
+    "color": "#3a3f4b",
+    "color2": "#7d8497",
+    "origin": "seed"
+  },
+  {
+    "id": "mi-pad7",
+    "category": "平板",
+    "brand": "小米",
+    "brandTier": "popular",
+    "name": "小米平板 7 Pro",
+    "price": 2499,
+    "rating": 96,
+    "sales": 43000,
+    "tags": [
+      "大屏",
+      "性价比",
+      "办公"
+    ],
+    "highlights": [
+      "3.2K 144Hz 屏",
+      "骁龙 8s Gen3"
+    ],
+    "audience": "影音与网课用户",
+    "scenes": [
+      "大屏",
+      "办公",
+      "性价比"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "骁龙 8s Gen3",
+      "屏幕": "11.2 英寸 3.2K 144Hz",
+      "重量": "500g",
+      "续航": "约 9 小时"
+    },
+    "color": "#ff6900",
+    "color2": "#ffb26b",
+    "origin": "seed"
+  },
+  {
+    "id": "matepad-pro",
+    "category": "平板",
+    "brand": "华为",
+    "brandTier": "luxury",
+    "name": "MatePad Pro 13.2",
+    "price": 5299,
+    "rating": 97,
+    "sales": 15000,
+    "tags": [
+      "大屏",
+      "办公",
+      "商务"
+    ],
+    "highlights": [
+      "13.2 英寸 OLED",
+      "星闪手写笔"
+    ],
+    "audience": "专业办公与绘画",
+    "scenes": [
+      "办公",
+      "大屏",
+      "商务"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "麒麟 9000s",
+      "屏幕": "13.2 英寸 OLED",
+      "重量": "580g",
+      "续航": "约 8 小时"
+    },
+    "color": "#c8102e",
+    "color2": "#ff6b7f",
+    "origin": "seed"
+  },
+  {
+    "id": "honor-pad",
+    "category": "平板",
+    "brand": "荣耀",
+    "brandTier": "popular",
+    "name": "荣耀平板 V9",
+    "price": 1599,
+    "rating": 94,
+    "sales": 29000,
+    "tags": [
+      "性价比",
+      "大屏"
+    ],
+    "highlights": [
+      "12.1 英寸 2.5K 护眼屏",
+      "八扬声器"
+    ],
+    "audience": "学生网课",
+    "scenes": [
+      "大屏",
+      "性价比",
+      "学生"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "处理器": "骁龙 7 Gen3",
+      "屏幕": "12.1 英寸 2.5K",
+      "重量": "555g",
+      "续航": "约 10 小时"
+    },
+    "color": "#0aa1e0",
+    "color2": "#69d0ff",
+    "origin": "seed"
+  },
+  {
+    "id": "airpods-pro",
+    "category": "耳机",
+    "brand": "苹果",
+    "brandTier": "luxury",
+    "name": "AirPods Pro 2",
+    "price": 1899,
+    "rating": 98,
+    "sales": 210000,
+    "tags": [
+      "降噪",
+      "通勤",
+      "系统"
+    ],
+    "highlights": [
+      "自适应降噪",
+      "空间音频"
+    ],
+    "audience": "通勤与苹果生态用户",
+    "scenes": [
+      "通勤",
+      "音乐",
+      "降噪"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "类型": "入耳式",
+      "降噪": "自适应主动降噪",
+      "续航": "6+30 小时",
+      "重量": "5.3g/只"
+    },
+    "color": "#3a3f4b",
+    "color2": "#7d8497",
+    "origin": "seed"
+  },
+  {
+    "id": "sony-xm5",
+    "category": "耳机",
+    "brand": "索尼",
+    "brandTier": "luxury",
+    "name": "WF-1000XM5",
+    "price": 1999,
+    "rating": 97,
+    "sales": 76000,
+    "tags": [
+      "降噪",
+      "音质"
+    ],
+    "highlights": [
+      "业界顶级降噪",
+      "LDAC 高解析音质"
+    ],
+    "audience": "对音质挑剔的用户",
+    "scenes": [
+      "音乐",
+      "降噪",
+      "通勤"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "类型": "入耳式",
+      "降噪": "主动降噪",
+      "续航": "8+24 小时",
+      "重量": "5.9g/只"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "shokz-openrun",
+    "category": "耳机",
+    "brand": "韶音",
+    "brandTier": "niche",
+    "name": "OpenRun Pro 2",
+    "price": 1298,
+    "rating": 96,
+    "sales": 58000,
+    "tags": [
+      "运动",
+      "户外",
+      "骨传导"
+    ],
+    "highlights": [
+      "不入耳佩戴，跑步稳固",
+      "IP55 防水"
+    ],
+    "audience": "跑步与骑行爱好者",
+    "scenes": [
+      "运动",
+      "户外"
+    ],
+    "environments": [
+      "outdoor"
+    ],
+    "specs": {
+      "类型": "骨传导",
+      "防水": "IP55",
+      "续航": "12 小时",
+      "重量": "29g"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "edifier-lolli",
+    "category": "耳机",
+    "brand": "漫步者",
+    "brandTier": "popular",
+    "name": "LolliPods Pro 3",
+    "price": 299,
+    "rating": 93,
+    "sales": 320000,
+    "tags": [
+      "性价比",
+      "降噪"
+    ],
+    "highlights": [
+      "-42dB 主动降噪",
+      "百元价位蓝牙 5.3"
+    ],
+    "audience": "学生党与性价比用户",
+    "scenes": [
+      "音乐",
+      "降噪",
+      "性价比"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "类型": "入耳式",
+      "降噪": "-42dB",
+      "续航": "5+20 小时",
+      "重量": "4.5g/只"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "bose-ultra",
+    "category": "耳机",
+    "brand": "Bose",
+    "brandTier": "luxury",
+    "name": "QuietComfort Ultra",
+    "price": 2799,
+    "rating": 97,
+    "sales": 24000,
+    "tags": [
+      "高奢",
+      "降噪",
+      "音质"
+    ],
+    "highlights": [
+      "沉浸式空间音频",
+      "佩戴极舒适"
+    ],
+    "audience": "高端通勤人群",
+    "scenes": [
+      "音乐",
+      "降噪",
+      "商务"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "类型": "头戴式",
+      "降噪": "自适应",
+      "续航": "24 小时",
+      "重量": "250g"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "watch-s10",
+    "category": "智能穿戴",
+    "brand": "苹果",
+    "brandTier": "luxury",
+    "name": "Apple Watch Series 10",
+    "price": 2999,
+    "rating": 98,
+    "sales": 88000,
+    "tags": [
+      "健康",
+      "系统",
+      "户外"
+    ],
+    "highlights": [
+      "全天候血氧心率监测",
+      "运动圆环"
+    ],
+    "audience": "健康管理与运动人群",
+    "scenes": [
+      "健康",
+      "运动",
+      "系统"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "屏幕": "1.96 英寸 OLED",
+      "健康监测": "心率/血氧/睡眠",
+      "续航": "18 小时",
+      "防水": "50 米"
+    },
+    "color": "#3a3f4b",
+    "color2": "#7d8497",
+    "origin": "seed"
+  },
+  {
+    "id": "watch-gt5",
+    "category": "智能穿戴",
+    "brand": "华为",
+    "brandTier": "luxury",
+    "name": "华为 Watch GT5",
+    "price": 1488,
+    "rating": 96,
+    "sales": 120000,
+    "tags": [
+      "续航",
+      "健康",
+      "户外"
+    ],
+    "highlights": [
+      "14 天超长续航",
+      "越野跑模式"
+    ],
+    "audience": "长续航运动用户",
+    "scenes": [
+      "健康",
+      "运动",
+      "续航"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "屏幕": "1.43 英寸 AMOLED",
+      "健康监测": "心率/血氧/压力",
+      "续航": "14 天",
+      "重量": "35g"
+    },
+    "color": "#c8102e",
+    "color2": "#ff6b7f",
+    "origin": "seed"
+  },
+  {
+    "id": "mi-band9",
+    "category": "智能穿戴",
+    "brand": "小米",
+    "brandTier": "popular",
+    "name": "小米手环 9",
+    "price": 249,
+    "rating": 95,
+    "sales": 460000,
+    "tags": [
+      "性价比",
+      "健康"
+    ],
+    "highlights": [
+      "21 天续航",
+      "150+ 运动模式"
+    ],
+    "audience": "入门健康监测",
+    "scenes": [
+      "健康",
+      "性价比"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "屏幕": "1.62 英寸 AMOLED",
+      "健康监测": "心率/睡眠",
+      "续航": "21 天",
+      "重量": "15g"
+    },
+    "color": "#ff6900",
+    "color2": "#ffb26b",
+    "origin": "seed"
+  },
+  {
+    "id": "garmin-265",
+    "category": "智能穿戴",
+    "brand": "佳明",
+    "brandTier": "niche",
+    "name": "Forerunner 265",
+    "price": 2680,
+    "rating": 97,
+    "sales": 13000,
+    "tags": [
+      "户外",
+      "运动",
+      "小众"
+    ],
+    "highlights": [
+      "专业跑步训练建议",
+      "多频 GPS"
+    ],
+    "audience": "严肃跑者与越野爱好者",
+    "scenes": [
+      "运动",
+      "户外"
+    ],
+    "environments": [
+      "outdoor"
+    ],
+    "specs": {
+      "屏幕": "1.3 英寸 AMOLED",
+      "GPS": "多频多星",
+      "续航": "13 天",
+      "重量": "47g"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "dyson-hd15",
+    "category": "家电",
+    "brand": "戴森",
+    "brandTier": "luxury",
+    "name": "戴森 Supersonic HD15 吹风机",
+    "price": 3399,
+    "rating": 97,
+    "sales": 62000,
+    "tags": [
+      "高奢",
+      "个护",
+      "居家"
+    ],
+    "highlights": [
+      "智能温控不伤发",
+      "五种风嘴"
+    ],
+    "audience": "追求护发体验的用户",
+    "scenes": [
+      "居家",
+      "个护"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "类型": "高速吹风机",
+      "功率": "1600W",
+      "风速": "13 万转/分钟",
+      "重量": "560g"
+    },
+    "color": "#8b2fbf",
+    "color2": "#c47ce8",
+    "origin": "seed"
+  },
+  {
+    "id": "midea-ac",
+    "category": "家电",
+    "brand": "美的",
+    "brandTier": "popular",
+    "name": "美的 1.5 匹新一级变频空调",
+    "price": 2699,
+    "rating": 95,
+    "sales": 180000,
+    "tags": [
+      "居家",
+      "省电",
+      "热门"
+    ],
+    "highlights": [
+      "新一级能效",
+      "无声睡眠模式"
+    ],
+    "audience": "卧室与客厅装机",
+    "scenes": [
+      "居家",
+      "省电"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "类型": "壁挂式",
+      "匹数": "1.5 匹",
+      "能效": "新一级",
+      "适用面积": "15-23㎡"
+    },
+    "color": "#1f8ad6",
+    "color2": "#74bdf0",
+    "origin": "seed"
+  },
+  {
+    "id": "gree-ac",
+    "category": "家电",
+    "brand": "格力",
+    "brandTier": "popular",
+    "name": "格力 云佳 1.5 匹空调",
+    "price": 2899,
+    "rating": 96,
+    "sales": 210000,
+    "tags": [
+      "居家",
+      "热门",
+      "耐用"
+    ],
+    "highlights": [
+      "双级增焓压缩机",
+      "自清洁"
+    ],
+    "audience": "看重耐用与售后的家庭",
+    "scenes": [
+      "居家",
+      "耐用"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "类型": "壁挂式",
+      "匹数": "1.5 匹",
+      "能效": "一级",
+      "适用面积": "16-20㎡"
+    },
+    "color": "#0e63a8",
+    "color2": "#5ea3d8",
+    "origin": "seed"
+  },
+  {
+    "id": "haier-fridge",
+    "category": "家电",
+    "brand": "海尔",
+    "brandTier": "popular",
+    "name": "海尔 501L 十字对开门冰箱",
+    "price": 4299,
+    "rating": 96,
+    "sales": 96000,
+    "tags": [
+      "居家",
+      "大容量",
+      "热门"
+    ],
+    "highlights": [
+      "干湿分储",
+      "一级能效"
+    ],
+    "audience": "三口以上家庭",
+    "scenes": [
+      "居家",
+      "大容量"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "类型": "十字对开门",
+      "容量": "501L",
+      "能效": "一级",
+      "尺寸": "830×1900mm"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "roborock-s8",
+    "category": "家电",
+    "brand": "石头",
+    "brandTier": "popular",
+    "name": "石头 P10S Pro 扫地机器人",
+    "price": 3299,
+    "rating": 94,
+    "sales": 74000,
+    "tags": [
+      "居家",
+      "智能",
+      "热门"
+    ],
+    "highlights": [
+      "双机械臂贴边清扫",
+      "自动集尘"
+    ],
+    "audience": "养宠物与上班族",
+    "scenes": [
+      "居家",
+      "智能"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "类型": "扫拖一体",
+      "吸力": "11000Pa",
+      "水箱": "自动补水",
+      "适用面积": "120㎡"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "joyoung-soy",
+    "category": "家电",
+    "brand": "九阳",
+    "brandTier": "economy",
+    "name": "九阳破壁豆浆机",
+    "price": 399,
+    "rating": 93,
+    "sales": 150000,
+    "tags": [
+      "居家",
+      "性价比",
+      "厨房"
+    ],
+    "highlights": [
+      "免滤免煮",
+      "一键清洗"
+    ],
+    "audience": "早餐党与家庭厨房",
+    "scenes": [
+      "居家",
+      "厨房",
+      "性价比"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "类型": "破壁机",
+      "容量": "1.2L",
+      "功率": "800W",
+      "功能": "豆浆/米糊/果汁"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "sk2-facial",
+    "category": "美妆",
+    "brand": "SK-II",
+    "brandTier": "luxury",
+    "name": "SK-II 神仙水 230ml",
+    "price": 1540,
+    "rating": 97,
+    "sales": 88000,
+    "tags": [
+      "高奢",
+      "护肤",
+      "口碑"
+    ],
+    "highlights": [
+      "PITERA 精华",
+      "稳定肤况"
+    ],
+    "audience": "轻熟龄护肤人群",
+    "scenes": [
+      "护肤",
+      "高奢"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "容量": "230ml",
+      "适合肤质": "混合/油皮",
+      "核心成分": "PITERA",
+      "质地": "水状精华"
+    },
+    "color": "#b8860b",
+    "color2": "#e3c26b",
+    "origin": "seed"
+  },
+  {
+    "id": "lancome-serum",
+    "category": "美妆",
+    "brand": "兰蔻",
+    "brandTier": "luxury",
+    "name": "兰蔻小黑瓶精华 50ml",
+    "price": 1080,
+    "rating": 96,
+    "sales": 120000,
+    "tags": [
+      "高奢",
+      "护肤",
+      "抗初老"
+    ],
+    "highlights": [
+      "二裂酵母发酵物",
+      "修护屏障"
+    ],
+    "audience": "25+ 抗初老",
+    "scenes": [
+      "护肤",
+      "抗初老"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "容量": "50ml",
+      "适合肤质": "全肤质",
+      "核心成分": "二裂酵母",
+      "质地": "蛋清精华"
+    },
+    "color": "#c2185b",
+    "color2": "#ff7aa8",
+    "origin": "seed"
+  },
+  {
+    "id": "proya-serum",
+    "category": "美妆",
+    "brand": "珀莱雅",
+    "brandTier": "popular",
+    "name": "珀莱雅红宝石精华 2.0",
+    "price": 249,
+    "rating": 95,
+    "sales": 260000,
+    "tags": [
+      "护肤",
+      "性价比",
+      "抗老"
+    ],
+    "highlights": [
+      "六胜肽抗皱",
+      "国货口碑爆款"
+    ],
+    "audience": "学生与初抗老人群",
+    "scenes": [
+      "护肤",
+      "性价比",
+      "抗老"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "容量": "30ml",
+      "适合肤质": "混合/干皮",
+      "核心成分": "六胜肽",
+      "质地": "轻盈精华"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "huaxizi-powder",
+    "category": "美妆",
+    "brand": "花西子",
+    "brandTier": "niche",
+    "name": "花西子空气蜜粉",
+    "price": 169,
+    "rating": 93,
+    "sales": 98000,
+    "tags": [
+      "彩妆",
+      "国风",
+      "小众"
+    ],
+    "highlights": [
+      "控油定妆",
+      "国风雕花包装"
+    ],
+    "audience": "喜欢国风彩妆的年轻女生",
+    "scenes": [
+      "彩妆",
+      "定妆"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "容量": "8.5g",
+      "适合肤质": "油皮/混油",
+      "妆效": "哑光控油",
+      "色号": "自然色"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "perfect-diary",
+    "category": "美妆",
+    "brand": "完美日记",
+    "brandTier": "popular",
+    "name": "完美日记小细跟口红",
+    "price": 89,
+    "rating": 91,
+    "sales": 210000,
+    "tags": [
+      "彩妆",
+      "性价比"
+    ],
+    "highlights": [
+      "丝绒质地",
+      "显白显气色"
+    ],
+    "audience": "学生党与入门彩妆",
+    "scenes": [
+      "彩妆",
+      "性价比"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "容量": "3.5g",
+      "质地": "丝绒哑光",
+      "色号": "多色可选",
+      "持妆": "约 6 小时"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "squirrel-nuts",
+    "category": "食品",
+    "brand": "三只松鼠",
+    "brandTier": "popular",
+    "name": "三只松鼠每日坚果 750g",
+    "price": 129,
+    "rating": 95,
+    "sales": 320000,
+    "tags": [
+      "零食",
+      "健康",
+      "热门"
+    ],
+    "highlights": [
+      "30 小袋独立装",
+      "六种坚果果干"
+    ],
+    "audience": "上班族加餐",
+    "scenes": [
+      "零食",
+      "健康"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "规格": "750g/30 袋",
+      "口味": "原味混合",
+      "保质期": "180 天",
+      "储存": "阴凉干燥"
+    },
+    "color": "#c98a2b",
+    "color2": "#e8c07a",
+    "origin": "seed"
+  },
+  {
+    "id": "baixiang-noodle",
+    "category": "食品",
+    "brand": "白象",
+    "brandTier": "economy",
+    "name": "白象汤好喝老母鸡汤面",
+    "price": 39.9,
+    "rating": 96,
+    "sales": 560000,
+    "tags": [
+      "速食",
+      "性价比",
+      "国货"
+    ],
+    "highlights": [
+      "真鸡汤底",
+      "非油炸面饼"
+    ],
+    "audience": "宿舍与加班速食",
+    "scenes": [
+      "速食",
+      "性价比"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "规格": "5 连包",
+      "口味": "老母鸡汤",
+      "保质期": "6 个月",
+      "做法": "煮/泡"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "genki-soda",
+    "category": "食品",
+    "brand": "元气森林",
+    "brandTier": "popular",
+    "name": "元气森林白桃味气泡水",
+    "price": 55,
+    "rating": 92,
+    "sales": 680000,
+    "tags": [
+      "饮料",
+      "零糖",
+      "热门"
+    ],
+    "highlights": [
+      "0 糖 0 脂 0 卡",
+      "白桃清爽口味"
+    ],
+    "audience": "控糖与年轻人群",
+    "scenes": [
+      "饮料",
+      "零糖"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "规格": "480ml×15 瓶",
+      "口味": "白桃",
+      "保质期": "9 个月",
+      "糖分": "0 糖"
+    },
+    "color": "#2bb673",
+    "color2": "#7ce0ad",
+    "origin": "seed"
+  },
+  {
+    "id": "wuchang-rice",
+    "category": "食品",
+    "brand": "五常",
+    "brandTier": "popular",
+    "name": "五常稻花香大米 5kg",
+    "price": 89,
+    "rating": 97,
+    "sales": 290000,
+    "tags": [
+      "主食",
+      "性价比",
+      "家庭"
+    ],
+    "highlights": [
+      "当季新米",
+      "稻花香 2 号"
+    ],
+    "audience": "家庭日常主食",
+    "scenes": [
+      "主食",
+      "家庭"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "规格": "5kg",
+      "产地": "黑龙江五常",
+      "品种": "稻花香 2 号",
+      "保质期": "12 个月"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "yili-milk",
+    "category": "食品",
+    "brand": "伊利",
+    "brandTier": "popular",
+    "name": "伊利金典有机纯牛奶",
+    "price": 79,
+    "rating": 96,
+    "sales": 410000,
+    "tags": [
+      "乳品",
+      "健康",
+      "礼盒"
+    ],
+    "highlights": [
+      "有机认证",
+      "3.8g 乳蛋白"
+    ],
+    "audience": "家庭早餐与送礼",
+    "scenes": [
+      "乳品",
+      "健康"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "规格": "250ml×12 盒",
+      "蛋白质": "3.8g/100ml",
+      "保质期": "6 个月",
+      "储存": "常温"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "arcteryx-jacket",
+    "category": "服饰",
+    "brand": "始祖鸟",
+    "brandTier": "luxury",
+    "name": "始祖鸟 Beta LT 冲锋衣",
+    "price": 4500,
+    "rating": 98,
+    "sales": 28000,
+    "tags": [
+      "高奢",
+      "户外",
+      "防风"
+    ],
+    "highlights": [
+      "GORE-TEX 面料",
+      "轻量三层压胶"
+    ],
+    "audience": "户外徒步与通勤",
+    "scenes": [
+      "户外",
+      "防风",
+      "高奢"
+    ],
+    "environments": [
+      "outdoor"
+    ],
+    "specs": {
+      "材质": "GORE-TEX 三层",
+      "防水": "20000mm",
+      "重量": "395g",
+      "适用季节": "春秋冬"
+    },
+    "color": "#1c3d2b",
+    "color2": "#5f8d76",
+    "origin": "seed"
+  },
+  {
+    "id": "uniqlo-fleece",
+    "category": "服饰",
+    "brand": "优衣库",
+    "brandTier": "economy",
+    "name": "优衣库摇粒绒外套",
+    "price": 199,
+    "rating": 94,
+    "sales": 780000,
+    "tags": [
+      "性价比",
+      "保暖",
+      "居家"
+    ],
+    "highlights": [
+      "轻便保暖",
+      "多色可选"
+    ],
+    "audience": "学生与通勤日常",
+    "scenes": [
+      "保暖",
+      "性价比"
+    ],
+    "environments": [
+      "indoor",
+      "outdoor"
+    ],
+    "specs": {
+      "材质": "聚酯纤维摇粒绒",
+      "适用季节": "秋冬",
+      "尺码": "S-XXL",
+      "版型": "宽松"
+    },
+    "color": "#e60012",
+    "color2": "#ff6b6b",
+    "origin": "seed"
+  },
+  {
+    "id": "anta-shoes",
+    "category": "服饰",
+    "brand": "安踏",
+    "brandTier": "popular",
+    "name": "安踏氢跑 5 跑步鞋",
+    "price": 299,
+    "rating": 93,
+    "sales": 520000,
+    "tags": [
+      "运动",
+      "性价比",
+      "热门"
+    ],
+    "highlights": [
+      "轻量回弹中底",
+      "透气网面"
+    ],
+    "audience": "日常慢跑与健走",
+    "scenes": [
+      "运动",
+      "跑步",
+      "性价比"
+    ],
+    "environments": [
+      "outdoor"
+    ],
+    "specs": {
+      "材质": "网面+EVA",
+      "重量": "约 230g",
+      "适用场景": "慢跑/健走",
+      "尺码": "36-45"
+    },
+    "color": "#d81e06",
+    "color2": "#ff6b57",
+    "origin": "seed"
+  },
+  {
+    "id": "neiwai-bra",
+    "category": "服饰",
+    "brand": "内外",
+    "brandTier": "niche",
+    "name": "内外零感无尺码内衣",
+    "price": 169,
+    "rating": 95,
+    "sales": 190000,
+    "tags": [
+      "舒适",
+      "小众",
+      "贴身"
+    ],
+    "highlights": [
+      "无钢圈零感",
+      "无尺码适配"
+    ],
+    "audience": "追求舒适的女性",
+    "scenes": [
+      "舒适",
+      "贴身"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "材质": "锦纶+氨纶",
+      "版型": "无钢圈",
+      "尺码": "均码",
+      "适用季节": "四季"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "ikea-desk",
+    "category": "家居",
+    "brand": "宜家",
+    "brandTier": "popular",
+    "name": "宜家贝肯特书桌 120×60",
+    "price": 499,
+    "rating": 92,
+    "sales": 210000,
+    "tags": [
+      "性价比",
+      "办公",
+      "居家"
+    ],
+    "highlights": [
+      "可调节桌腿",
+      "简约白色"
+    ],
+    "audience": "居家办公与学生",
+    "scenes": [
+      "办公",
+      "居家",
+      "性价比"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "材质": "刨花板贴面",
+      "尺寸": "120×60cm",
+      "风格": "简约",
+      "承重": "50kg"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "yuanshi-table",
+    "category": "家居",
+    "brand": "源氏木语",
+    "brandTier": "popular",
+    "name": "源氏木语实木餐桌 1.4m",
+    "price": 1899,
+    "rating": 95,
+    "sales": 86000,
+    "tags": [
+      "实木",
+      "居家",
+      "热门"
+    ],
+    "highlights": [
+      "北美白橡木",
+      "环保水性漆"
+    ],
+    "audience": "注重环保的家庭",
+    "scenes": [
+      "居家",
+      "耐用"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "材质": "白橡木",
+      "尺寸": "140×80cm",
+      "风格": "北欧",
+      "工艺": "榫卯"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "linshi-sofa",
+    "category": "家居",
+    "brand": "林氏家居",
+    "brandTier": "popular",
+    "name": "林氏家居科技布沙发 三人位",
+    "price": 2699,
+    "rating": 93,
+    "sales": 63000,
+    "tags": [
+      "居家",
+      "舒适",
+      "热门"
+    ],
+    "highlights": [
+      "科技布防污",
+      "高回弹海绵"
+    ],
+    "audience": "小户型与租房改造",
+    "scenes": [
+      "居家",
+      "舒适"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "材质": "科技布",
+      "尺寸": "200×90cm",
+      "风格": "现代简约",
+      "填充": "高回弹海绵"
+    },
+    "color": "#5b6b8c",
+    "color2": "#9aa8c2",
+    "origin": "seed"
+  },
+  {
+    "id": "guanxia-candle",
+    "category": "家居",
+    "brand": "观夏",
+    "brandTier": "niche",
+    "name": "观夏昆仑煮雪香薰蜡烛",
+    "price": 328,
+    "rating": 96,
+    "sales": 42000,
+    "tags": [
+      "香薰",
+      "小众",
+      "礼赠"
+    ],
+    "highlights": [
+      "雪松木质调",
+      "手工浇筑"
+    ],
+    "audience": "居家氛围与送礼",
+    "scenes": [
+      "香薰",
+      "礼赠",
+      "居家"
+    ],
+    "environments": [
+      "indoor"
+    ],
+    "specs": {
+      "容量": "220g",
+      "香调": "雪松木质",
+      "燃烧时长": "约 45 小时",
+      "材质": "大豆蜡"
+    },
+    "color": "#5a4b3c",
+    "color2": "#a3917f",
+    "origin": "seed"
+  }
+]

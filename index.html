@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>小函智能导购 · 全品类选品助手</title>
+<link rel="stylesheet" href="css/style.css?v=20261102f" />
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="logo">函</div>
+    <div class="titles">
+      <h1>小函智能导购</h1>
+      <p>手机 · 电脑 · 耳机 · 家电 · 美妆 · 食品，室内室外都能挑</p>
+    </div>
+    <div class="top-actions">
+      <div class="pill" id="llmPill">对话引擎 · 本地规则</div>
+      <button class="icon-btn" id="memoryBtn">记忆库</button>
+      <button class="icon-btn only-compact" id="sideToggle">我的画像</button>
+      <button class="icon-btn only-mobile" id="panelToggle">推荐</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="side">
+      <div class="card profile-card">
+        <div class="card-title">我的画像 <span class="live">实时</span></div>
+        <p class="summary" id="profileSummary">正在读取你的偏好…</p>
+        <div class="chips" id="profileChips"></div>
+        <div class="metrics">
+          <div><b id="statSearch">0</b><span>次搜索</span></div>
+          <div><b id="statView">0</b><span>款看过</span></div>
+          <div><b id="statUntouched">0</b><span>款未接触</span></div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="avoidToggle" checked />
+          <span>优先推荐看过的，避开零交互商品</span>
+        </label>
+      </div>
+
+      <div class="card">
+        <div class="card-title">最近搜索</div>
+        <div class="chips" id="recentSearches"><span class="empty">还没有搜索记录</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">快捷需求</div>
+        <div class="quick-grid" id="quickGrid"></div>
+      </div>
+
+    </aside>
+
+    <section class="chat">
+      <div class="messages" id="messages"></div>
+
+      <div class="tray hidden" id="tray">
+        <span id="trayText">已选 0/3</span>
+        <div class="tray-actions">
+          <button class="btn primary small" id="trayCompare" disabled>生成对比表</button>
+          <button class="btn ghost small" id="trayClear">清空</button>
+        </div>
+      </div>
+
+      <div class="composer">
+        <div class="composer-top">
+          <select id="dialectSelect" class="select">
+            <option value="zh-CN|">普通话</option>
+          </select>
+          <span class="hint" id="voiceHint">支持粤语 / 四川话 / 东北话等方言</span>
+          <button class="icon-btn tiny" id="ttsBtn" title="语音播报回复">🔊 播报</button>
+        </div>
+        <div class="composer-row">
+          <button class="mic" id="micBtn" title="语音输入">🎙</button>
+          <input id="input" type="text" autocomplete="off" placeholder="说需求 / 发京东淘宝链接 / 说“A 和 B 哪个好”，三种都行" />
+          <button class="btn primary send" id="sendBtn">发送</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel" id="panel">
+      <div class="panel-tabs">
+        <button class="tab active" data-tab="feed">为你推荐</button>
+        <button class="tab" data-tab="compare">对比表</button>
+        <span class="feed-note" id="feedNote"></span>
+      </div>
+      <div class="panel-body" id="feedPane"></div>
+      <div class="panel-body hidden" id="comparePane">
+        <div class="empty">选择 2-3 款商品后，这里会生成「价格 / 好评 / 销量」对比表</div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<div class="modal hidden" id="memoryModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>我的记忆库</h2>
+      <button class="icon-btn" id="memoryClose">✕</button>
+    </div>
+    <div class="modal-body" id="memoryBody"></div>
+    <div class="modal-foot">
+      <button class="btn ghost" id="memoryReset">清空我的记忆</button>
+      <button class="btn primary" id="memoryOk">知道了</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal hidden" id="productModal">
+  <div class="modal-card product-modal-card">
+    <div class="modal-head">
+      <div class="pm-head">
+        <span class="pm-brand" id="pmBrand"></span>
+        <h2 id="pmTitle">商品详情</h2>
+      </div>
+      <button class="icon-btn" id="pmClose">✕</button>
+    </div>
+    <div class="pm-switch">
+      <button class="pm-tab active" data-view="2d">2D 展示</button>
+      <button class="pm-tab" data-view="3d">3D 展示</button>
+    </div>
+    <div class="modal-body pm-body">
+      <div class="pm-view" id="pmView2d">
+        <div class="pm-stage" id="pmStage2d"></div>
+        <div class="pm-tip">平面商品图 · 鼠标悬停可放大看细节</div>
+      </div>
+      <div class="pm-view hidden" id="pmView3d">
+        <div class="viewer3d" id="viewer3d">
+          <div class="stage3d" id="stage3d">
+            <div class="card3d" id="card3d">
+              <div class="face3d front" id="pmFaceFront"></div>
+              <div class="face3d back" id="pmFaceBack"></div>
+            </div>
+          </div>
+          <div class="ground3d"></div>
+          <div class="viewer3d-hint">拖动旋转 · 滚轮缩放 · 双击复位</div>
+          <button class="viewer3d-reset" id="pm3dReset">复位</button>
+        </div>
+        <div class="model3d hidden" id="pmModelViewer"></div>
+        <div class="pm-tip" id="pm3dTip">3D 交互视图 · 按住拖动可 360° 旋转</div>
+      </div>
+      <div class="pm-info" id="pmInfo"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" id="pmCompare">加入对比</button>
+      <button class="btn primary" id="pmAsk">问这款</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="js/pyapi.js"></script>
+<script type="module" src="js/app.js?v=20261102j"></script>
+</body>
+</html>
