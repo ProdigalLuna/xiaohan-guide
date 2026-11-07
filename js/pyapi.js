@@ -77,6 +77,10 @@
     setText("下载 Python 运行时…");
     var mod = await loadPyodide({ indexURL: PYODIDE_URL });
 
+    // Pyodide 的 sqlite3 是独立包，必须单独装载，否则 db.py 导入时会报 ModuleNotFoundError
+    setText("装载数据库模块…");
+    await mod.loadPackage("sqlite3", { messageCallback: function () {} });
+
     setText("解压项目源码…");
     await mod.runPython([
       "import os, sys",
