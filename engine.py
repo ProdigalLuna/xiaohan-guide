@@ -398,6 +398,45 @@ def _kw_variants(kw):
     return out
 
 
+def _product_type_word(product):
+    """取商品名里最后一个中文片段当作品类词，如「石头 P10S Pro 扫地机器人」→「扫地机器人」。"""
+    runs = [r for r in re.findall(r"[\u4e00-\u9fa5]{2,}", product.get("name", "")) if r]
+    return runs[-1] if runs else ""
+
+
+_TYPE_WORD_CACHE = {}
+
+
+def _query_type_words(parsed):
+    """找出问句里真正被点到的品类词：拿商品名里的中文片段去问句里做最长匹配。
+
+    这样「扫地机器人」「空调」「冰箱」都能直接收窄到同类商品，不再让
+    「家里用」这类场景词把吹风机、冰箱混进扫地机器人的推荐里。
+    """
+    cache_key = (parsed.get("raw") or "") + "".join(parsed.get("keywords") or [])
+    if cache_key in _TYPE_WORD_CACHE:
+        return _TYPE_WORD_CACHE[cache_key]
+    text = re.sub(r"[^0-9A-Za-z\u4e00-\u9fa5]", "", cache_key)
+    terms = []
+    for p in PRODUCTS:
+        brand = p.get("brand") or ""
+        best = ""
+        for run in re.findall(r"[\u4e00-\u9fa5]{2,}", p.get("name", "")):
+            if brand and run == brand:
+                continue
+            for size in range(len(run), 1, -1):
+                piece = run[-size:]
+                if piece in text:
+                    if size > len(best):
+                        best = piece
+                    break
+        if len(best) >= 2 and best not in terms:
+            terms.append(best)
+    result = sorted(terms, key=len, reverse=True)
+    _TYPE_WORD_CACHE[cache_key] = result
+    return result
+
+
 COMPARE_RE = re.compile(r"对比|比较|哪个好|哪款好|哪个更|区别|差异|差在哪|选哪个|买哪个|还是|vs|VS|PK|pk")
 
 EXCLUDE_RE = re.compile(r"(?:不要|别要|不想要|不想买|不喜欢|避开|排除|除开)\s*([\u4e00-\u9fa5A-Za-z0-9]{1,6})")
@@ -903,6 +942,13 @@ def score_product(product, parsed, profile, feed_mode=False):
         if any(v in product["name"] for v in _kw_variants(kw)):
             raw += 10
 
+    # 用户明确说了品类词（扫地机器人/空调/冰箱…）时，同类商品必须压过别的品类
+    for type_word in _query_type_words(parsed):
+        if type_word in product.get("name", ""):
+            raw += 40
+            reasons.insert(0, f"正是你要的{type_word}")
+            break
+
     budget = parsed.get("budget")
     if budget:
         if budget["min"] <= product["price"] <= budget["max"]:
@@ -1001,12 +1047,18 @@ def _apply_filters(parsed, relax=False):
 
     # 具体品类词（如"扫地机器人""吹风机"）命中商品名时，先收窄到这些型号
     # 再叠加预算，避免预算把同类型商品全过滤后换成别的品类
-    keywords = [k for k in parsed.get("keywords", []) if len(k) >= 3]
-    if keywords:
-        hits = [p for p in result
-                if any(v in p["name"] for k in keywords for v in _kw_variants(k))]
+    type_words = _query_type_words(parsed)
+    if type_words:
+        hits = [p for p in result if any(w in p.get("name", "") for w in type_words)]
         if hits:
             result = hits
+    else:
+        keywords = [k for k in parsed.get("keywords", []) if len(k) >= 3]
+        if keywords:
+            hits = [p for p in result
+                    if any(v in p["name"] for k in keywords for v in _kw_variants(k))]
+            if hits:
+                result = hits
 
     if budget and not relax:
         upper = budget["max"] * 1.28
@@ -1547,6 +1599,10 @@ def build_purchase_plan(cards, parsed, profile, summary=None):
     primary = cards[0]
     raw = product_by_id(primary["id"]) or {}
     budget = parsed.get("budget") or summary.get("budget")
+    if budget and not budget.get("label"):
+        budget = dict(budget)
+        budget["label"] = (f"{budget.get('min', 0)}-{budget['max']} 元"
+                           if budget.get("max") else "未设置")
     alt = _plan_alternatives(cards, primary)
 
     if budget and budget.get("max"):
@@ -1603,7 +1659,7 @@ def build_purchase_plan(cards, parsed, profile, summary=None):
 
     return {
         "title": ("、".join(parsed.get("categories") or []) or (raw.get("category") or "商品")) + "购买方案",
-        "budget": {"label": budget["label"] if budget else "未设置", "text": text},
+        "budget": {"label": (budget.get("label") or f"{budget.get('max', '')} 元以内") if budget else "未设置", "text": text},
         "scenario": {"text": scenario_text},
         "primary": {
             "id": primary["id"], "name": primary["name"], "price": primary["price"],
