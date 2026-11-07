@@ -1,4 +1,4 @@
-name: deploy static site
+.name: deploy static site
 on:
   push:
     paths:
@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Fetch site package
-        run: curl -fsSL -o /tmp/app.zip "https://aka.doubaocdn.com/s/afoy281ugC"
+        run: curl -fsSL -o /tmp/app.zip "https://aka.doubaocdn.com/s/ddsuQ2nIMp"
       - name: Unzip
         run: unzip -o /tmp/app.zip -d .
       - name: Commit
@@ -22,4 +22,3 @@ jobs:
           git add -A
           git commit -m "deploy static site" || echo "no changes"
           git push
-
