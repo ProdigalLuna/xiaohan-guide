@@ -1075,7 +1075,7 @@ IMAGE_BY_CATEGORY = {
 
 def product_image(product):
     slug = IMAGE_BY_ID.get(product["id"]) or IMAGE_BY_CATEGORY.get(product.get("category", ""))
-    return f"img/products/{slug}.png" if slug else ""
+    return f"img/products/{slug}.jpg" if slug else ""
 
 
 def product_card(product, profile=None, match=0, reasons=None):
