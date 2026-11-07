@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>小函智能导购 · 全品类选品助手</title>
-<link rel="stylesheet" href="css/style.css?v=20261102f" />
+<link rel="stylesheet" href="css/style.css?v=20261107a" />
 </head>
 <body>
 <div class="app">
@@ -15,7 +15,7 @@
       <p>手机 · 电脑 · 耳机 · 家电 · 美妆 · 食品，室内室外都能挑</p>
     </div>
     <div class="top-actions">
-      <div class="pill" id="llmPill">对话引擎 · 本地规则</div>
+      <button class="pill" id="llmPill" title="点击设置大模型 Key">对话引擎 · 本地规则</button>
       <button class="icon-btn" id="memoryBtn">记忆库</button>
       <button class="icon-btn only-compact" id="sideToggle">我的画像</button>
       <button class="icon-btn only-mobile" id="panelToggle">推荐</button>
@@ -81,10 +81,22 @@
     <aside class="panel" id="panel">
       <div class="panel-tabs">
         <button class="tab active" data-tab="feed">为你推荐</button>
+        <button class="tab" data-tab="search">搜索</button>
         <button class="tab" data-tab="compare">对比表</button>
         <span class="feed-note" id="feedNote"></span>
       </div>
       <div class="panel-body" id="feedPane"></div>
+      <div class="panel-body hidden" id="searchPane">
+        <div class="search-bar">
+          <input id="searchInput" type="search" autocomplete="off" placeholder="搜商品 / 品类 / 场景，如「3000 以内拍照手机」" />
+          <button class="btn primary small" id="searchBtn">检索</button>
+        </div>
+        <div class="chips" id="searchChips"></div>
+        <div class="search-results" id="searchResults">
+          <div class="empty">输入关键词或一句需求，按预算 / 场景 / 品牌收窄，结果按匹配度排序</div>
+        </div>
+        <div class="search-tip">结果来自站内 61 款商品；每张卡片可直接跳京东 / 淘宝比价</div>
+      </div>
       <div class="panel-body hidden" id="comparePane">
         <div class="empty">选择 2-3 款商品后，这里会生成「价格 / 好评 / 销量」对比表</div>
       </div>
@@ -148,8 +160,29 @@
   </div>
 </div>
 
+<div class="modal hidden" id="llmModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>对话引擎设置</h2>
+      <button class="icon-btn" id="llmClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="llm-desc">填入大模型 Key 后，「小函」会用真实大模型理解需求、生成话术；不填则使用零依赖本地规则引擎，站点功能完整可用。</p>
+      <p class="llm-warn">Key 只保存在这台电脑的浏览器里（localStorage），只在你的浏览器内直接调用接口，不会上传服务器，也不会写进公开仓库。</p>
+      <label class="llm-field"><span>API Key</span><input id="llmKey" type="password" autocomplete="off" placeholder="sk-..." /></label>
+      <label class="llm-field"><span>接口地址</span><input id="llmBase" type="text" autocomplete="off" placeholder="https://api.deepseek.com/v1" /></label>
+      <label class="llm-field"><span>模型名</span><input id="llmModel" type="text" autocomplete="off" placeholder="deepseek-chat" /></label>
+      <div class="llm-status" id="llmStatus">当前：本地规则引擎（61 款机型，无需 Key）</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" id="llmClear">清除 Key</button>
+      <button class="btn primary" id="llmSave">保存并启用</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <script src="js/pyapi.js"></script>
-<script type="module" src="js/app.js?v=20261102j"></script>
+<script type="module" src="js/app.js?v=20261107a"></script>
 </body>
 </html>

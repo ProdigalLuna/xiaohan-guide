@@ -28,6 +28,9 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 
 _lock = threading.RLock()
 
+# 运行时大模型配置：只由前端在本机注入（存浏览器 localStorage），不写入仓库与磁盘
+RUNTIME_LLM = {"apiKey": "", "apiBase": "", "model": ""}
+
 db.init()
 PRODUCTS = db.load_products()
 with open(os.path.join(DATA_DIR, "dialects.json"), "r", encoding="utf-8") as f:
@@ -1126,6 +1129,172 @@ def recommend(parsed, profile, limit=3, feed_mode=False, exclude=None):
     return cards
 
 
+def _lcs_match(query, text):
+    """最长公共子串：把「扫地机器人」这类整句关键词对到商品名/卖点上。"""
+    if not query or not text:
+        return 0, ""
+    a, b = query[:40], text[:220]
+    best_len, best_end = 0, 0
+    prev = [0] * (len(b) + 1)
+    for i in range(1, len(a) + 1):
+        cur = [0] * (len(b) + 1)
+        ai = a[i - 1]
+        for j in range(1, len(b) + 1):
+            if ai == b[j - 1]:
+                cur[j] = prev[j - 1] + 1
+                if cur[j] > best_len:
+                    best_len, best_end = cur[j], i
+        prev = cur
+    if best_len < 2:
+        return best_len, ""
+    return best_len, a[best_end - best_len:best_end]
+
+
+def _search_suggestions(limit=8):
+    """空结果时给几个可直接点的品类词。"""
+    seen = []
+    for p in PRODUCTS:
+        cat = p.get("category")
+        if cat and cat not in seen:
+            seen.append(cat)
+    return seen[:limit]
+
+
+def _merge_llm_hints(parsed, hints):
+    """把前端大模型解析出的结构化线索并入规则解析结果（只补空缺、不覆盖）。"""
+    if not isinstance(hints, dict):
+        return parsed
+    lo = hints.get("budgetMin")
+    hi = hints.get("budgetMax")
+    if not parsed.get("budget") and (isinstance(lo, int) or isinstance(hi, int)):
+        lo = lo if isinstance(lo, int) else 0
+        hi = hi if isinstance(hi, int) else 99999
+        if lo or hi:
+            label = f"{lo}-{hi} 元" if lo else f"{hi} 元以内"
+            parsed["budget"] = {"min": lo, "max": hi, "label": label, "type": "llm"}
+    for key in ("brands", "keywords", "exclude"):
+        for word in hints.get(key) or []:
+            if isinstance(word, str) and word and word not in parsed.get(key, []):
+                parsed.setdefault(key, []).append(word)
+    for need in hints.get("needs") or []:
+        if isinstance(need, str) and need in SCENES and need not in parsed.get("scenes", []):
+            parsed.setdefault("scenes", []).append(need)
+    for cat in hints.get("categories") or []:
+        if isinstance(cat, str) and cat in CATEGORIES and cat not in parsed.get("categories", []):
+            parsed.setdefault("categories", []).append(cat)
+    parsed["llmParsed"] = True
+    return parsed
+
+
+def search_cards(raw_query, user_id="anon", limit=10, hints=None):
+    """站内检索式智能体：自然语言 → 结构化条件 → 排序卡片。
+
+    与大模型解说层共用同一份解析结果：配置了 Key 时先用 DeepSeek 补全
+    预算/场景/否定条件，再用同一套打分器排序，保证结果可解释、可复现。
+    """
+    query = (raw_query or "").strip()
+    if not query:
+        return {"query": "", "cards": [], "conditions": [], "relaxed": False,
+                "suggestions": _search_suggestions(),
+                "note": "输入商品名、品类或需求，例如「3000 以内拍照手机」"}
+
+    profile = get_profile(user_id)
+    parsed = parse_query(query)
+    if isinstance(hints, dict):
+        parsed = _merge_llm_hints(parsed, hints)
+    else:
+        try:
+            parsed = _enrich_parsed(parsed)
+        except Exception:  # noqa: BLE001  大模型不可用时静默回落规则解析
+            pass
+
+    candidates = _apply_filters(parsed)
+    relaxed = False
+    if not candidates:
+        candidates = _apply_filters(parsed, relax=True)
+        relaxed = True
+
+    # 「不要小米」这类：排除词命中品牌时，既撤销它带来的品牌硬条件，又剔除该品牌商品
+    all_brands = {p["brand"] for p in PRODUCTS}
+    drop_brands = set()
+    for word in parsed.get("exclude", []):
+        if not word:
+            continue
+        for brand in all_brands:
+            if word.startswith(brand) or brand.startswith(word):
+                drop_brands.add(brand)
+    if drop_brands:
+        parsed["brands"] = [b for b in parsed.get("brands", []) if b not in drop_brands]
+        candidates = _apply_filters(parsed)
+        if not candidates:
+            candidates = _apply_filters(parsed, relax=True)
+            relaxed = True
+        candidates = [p for p in candidates if p["brand"] not in drop_brands]
+
+    q_clean = re.sub(r"[^0-9a-z\u4e00-\u9fa5]", "", (parsed.get("normalized") or "").lower())
+    scored = []
+    for p in candidates:
+        raw, reasons = score_product(p, parsed, profile)
+        hay = re.sub(r"[^0-9a-z\u4e00-\u9fa5]", "",
+                     (p["name"] + "".join(p["tags"]) + "".join(p["highlights"])).lower())
+        hit_len, hit_text = _lcs_match(q_clean, hay)
+        if hit_len >= 2:
+            raw += min(34, hit_len * 5)
+            if hit_len >= 3 and hit_text:
+                reasons.insert(0, f"命中「{hit_text}」")
+        scored.append((raw, p, reasons[:3]))
+    scored.sort(key=lambda x: -x[0])
+
+    cards = [product_card(p, profile, int(max(35, min(99, 50 + raw * 0.45))), reasons)
+             for raw, p, reasons in scored[:limit]]
+
+    conditions = []
+    budget = parsed.get("budget")
+    if budget:
+        label = budget.get("label") or f"{budget['min']}-{budget['max']} 元"
+        conditions.append({"label": "预算", "value": label})
+    for key, label in (("categories", "品类"), ("brands", "品牌"), ("scenes", "场景")):
+        values = [v for v in parsed.get(key, []) if v]
+        if values:
+            conditions.append({"label": label, "value": "、".join(values[:4])})
+    env_text = _env_labels(parsed.get("environments", []))
+    if env_text:
+        conditions.append({"label": "环境", "value": env_text})
+    tiers = [BRAND_TIER_LABELS.get(t, t) for t in parsed.get("brandTiers", [])]
+    if tiers:
+        conditions.append({"label": "品牌档次", "value": "、".join(tiers)})
+    keywords = [k for k in parsed.get("keywords", []) if k and len(k) <= 6]
+    if keywords:
+        conditions.append({"label": "关键词", "value": "、".join(keywords[:3])})
+    excludes = [e for e in parsed.get("exclude", []) if e and len(e) <= 8]
+    if excludes:
+        conditions.append({"label": "排除", "value": "、".join(excludes)})
+    for brand in sorted(drop_brands):
+        conditions.append({"label": "排除品牌", "value": brand})
+
+    try:
+        record_search(user_id, parsed)
+    except Exception:  # noqa: BLE001
+        pass
+
+    note = ""
+    if parsed.get("llmParsed"):
+        note = "DeepSeek 已补充理解你的需求"
+    if relaxed:
+        note = (note + "；" if note else "") + "严格条件没有命中，已放宽预算等硬条件，以下是相近选择"
+
+    return {
+        "query": query,
+        "cards": cards,
+        "conditions": conditions,
+        "relaxed": relaxed,
+        "llm": bool(parsed.get("llmParsed")),
+        "note": note,
+        "suggestions": _search_suggestions(),
+        "total": len(candidates),
+    }
+
+
 def recommend_feed(user_id, limit=6):
     profile = get_profile(user_id)
     parsed = {"brands": [], "scenes": [], "keywords": [], "budget": None, "mentions": [], "intent": "feed"}
@@ -2140,7 +2309,7 @@ LLM_CONFIG_PATH = os.path.join(DATA_DIR, "llm_config.json")
 
 
 def _llm_conf():
-    """优先级：环境变量 > data/llm_config.json > 默认值。"""
+    """优先级：运行时注入（浏览器本机）> 环境变量 > data/llm_config.json > 默认值。"""
     conf = {}
     if os.path.exists(LLM_CONFIG_PATH):
         try:
@@ -2148,11 +2317,31 @@ def _llm_conf():
                 conf = json.load(f)
         except (json.JSONDecodeError, OSError):
             conf = {}
-    key = (os.environ.get("LLM_API_KEY") or os.environ.get("DEEPSEEK_API_KEY")
+    runtime = RUNTIME_LLM or {}
+    key = (runtime.get("apiKey") or os.environ.get("LLM_API_KEY")
+           or os.environ.get("DEEPSEEK_API_KEY")
            or os.environ.get("OPENAI_API_KEY") or conf.get("apiKey") or "")
-    base = (os.environ.get("LLM_API_BASE") or conf.get("apiBase") or "https://api.deepseek.com/v1").rstrip("/")
-    model = os.environ.get("LLM_MODEL") or conf.get("model") or "deepseek-chat"
+    base = (runtime.get("apiBase") or os.environ.get("LLM_API_BASE")
+            or conf.get("apiBase") or "https://api.deepseek.com/v1").rstrip("/")
+    model = runtime.get("model") or os.environ.get("LLM_MODEL") or conf.get("model") or "deepseek-chat"
     return key, base, model
+
+
+def set_llm_runtime(api_key="", api_base="", model=""):
+    """本机注入大模型 Key（仅进程内生效，刷新即失效，不进任何文件）。"""
+    RUNTIME_LLM["apiKey"] = (api_key or "").strip()
+    RUNTIME_LLM["apiBase"] = (api_base or "").strip()
+    RUNTIME_LLM["model"] = (model or "").strip()
+    return llm_status()
+
+
+def llm_status():
+    key, base, model = _llm_conf()
+    masked = ""
+    if key:
+        masked = key[:7] + "…" + key[-4:] if len(key) > 12 else "已配置"
+    return {"enabled": bool(key), "model": model if key else "", "base": base,
+            "maskedKey": masked, "runtime": bool((RUNTIME_LLM or {}).get("apiKey"))}
 
 
 def llm_enabled():

@@ -797,13 +797,276 @@ async function resetMemory() {
 function switchTab(name) {
   document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === name));
   $("#feedPane").classList.toggle("hidden", name !== "feed");
+  $("#searchPane").classList.toggle("hidden", name !== "search");
   $("#comparePane").classList.toggle("hidden", name !== "compare");
   $("#feedNote").style.display = name === "feed" ? "" : "none";
+  if (name === "search") {
+    const box = $("#searchInput");
+    if (box && !box.value) setTimeout(() => box.focus(), 60);
+  }
   if (window.innerWidth <= 820) {
     $("#panel").classList.add("open");
     $("#panelToggle").textContent = "收起";
   }
 }
+
+// ------------------------------------------------------------ 站内检索智能体
+function buyLinksEl(p) {
+  const kw = encodeURIComponent((p.name || "").replace(/\s+/g, ""));
+  const box = document.createElement("div");
+  box.className = "buy-links";
+  box.innerHTML =
+    `<a href="https://search.jd.com/Search?keyword=${kw}&enc=utf-8" target="_blank" rel="noopener noreferrer">京东比价 ↗</a>` +
+    `<a href="https://s.taobao.com/search?q=${kw}" target="_blank" rel="noopener noreferrer">淘宝比价 ↗</a>`;
+  return box;
+}
+
+// 浏览器内直连大模型（Key 只在本机 localStorage，不经过任何服务器）
+async function llmCall(messages, { maxTokens = 320, temperature = 0.2, json = false } = {}) {
+  const conf = readLlmConf();
+  if (!conf.apiKey) throw new Error("还没配置大模型 Key");
+  const base = (conf.apiBase || "https://api.deepseek.com/v1").replace(/\/+$/, "");
+  const body = { model: conf.model || "deepseek-chat", temperature, max_tokens: maxTokens, messages };
+  if (json) body.response_format = { type: "json_object" };
+  const res = await fetch(`${base}/chat/completions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${conf.apiKey}` },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error((data && data.error && data.error.message) || `大模型接口返回 ${res.status}`);
+  const choice = (data.choices && data.choices[0]) || {};
+  return (choice.message && choice.message.content) || "";
+}
+
+const HINT_SYSTEM = [
+  "你是电商导购的检索解析器。把用户的中文购物需求解析成 JSON，只输出 JSON，不要解释。",
+  "字段：budgetMin（整数元，未知填 null）、budgetMax（整数元，未知填 null）、",
+  "brands（明确要求的品牌数组）、categories（只能是：手机/笔记本/平板/耳机/智能穿戴/家电/美妆/食品/服饰/家居）、",
+  "needs（场景词，只能取：拍照/游戏/续航/快充/小屏/大屏/轻薄/性价比/商务/折叠/系统/自拍/信号/办公/性能/音乐/通勤/健康/居家/护肤/运动/户外/零食）、",
+  "keywords（商品名或特征词数组）、exclude（明确不要的品牌或属性数组）。",
+  "价格换算：一千出头≈1000-1500；两千以内≈0-2000；三千左右≈2500-3500；四千档≈3500-4500。",
+].join("");
+
+async function llmHints(query) {
+  const raw = await llmCall(
+    [{ role: "system", content: HINT_SYSTEM }, { role: "user", content: query }],
+    { maxTokens: 200, json: true }
+  );
+  return JSON.parse(raw);
+}
+
+async function renderAiInsight(data, hints) {
+  const pane = $("#searchResults");
+  if (!pane) return;
+  const box = document.createElement("div");
+  box.className = "ai-note";
+  box.textContent = "DeepSeek 正在解读这批结果…";
+  pane.prepend(box);
+  const facts = {
+    query: data.query,
+    conditions: (data.conditions || []).map((c) => `${c.label}=${c.value}`),
+    products: (data.cards || []).slice(0, 4).map((c) => ({
+      name: c.name,
+      price: c.price,
+      brand: c.brand,
+      rating: c.ratingText,
+      tags: (c.tags || []).slice(0, 3),
+      reasons: c.reasons,
+    })),
+  };
+  try {
+    const text = await llmCall(
+      [
+        {
+          role: "system",
+          content:
+            "你是「小函」，说话干脆的中文导购。只输出一段不超过 70 字的口语解读：先说这批结果适合谁，再点出首选与备选的差别。" +
+            "只能用给定事实，严禁编造参数、价格、销量或评价；不要开场白，不要 markdown。",
+        },
+        { role: "user", content: JSON.stringify(facts) },
+      ],
+      { maxTokens: 140, temperature: 0.5 }
+    );
+    if (!text.trim()) throw new Error("空回复");
+    box.textContent = text.trim();
+  } catch (err) {
+    box.remove();
+  }
+}
+
+async function runSearch(rawQuery) {
+  const box = $("#searchInput");
+  const query = String(rawQuery ?? box.value ?? "").trim();
+  if (!query) {
+    box.focus();
+    toast("先输入要搜的内容，例如「3000 以内拍照手机」");
+    return;
+  }
+  box.value = query;
+  const pane = $("#searchResults");
+  pane.innerHTML = '<div class="empty">检索中…</div>';
+  $("#searchChips").innerHTML = "";
+
+  // 配了 Key 就先用大模型把口语需求翻成结构化条件，再交给站内检索引擎
+  let hints = null;
+  if (readLlmConf().apiKey) {
+    try {
+      hints = await llmHints(query);
+    } catch (err) {
+      console.warn("大模型解析失败，回落规则解析", err);
+    }
+  }
+
+  try {
+    let url = `/api/search?q=${encodeURIComponent(query)}&userId=${encodeURIComponent(state.userId)}&limit=10`;
+    if (hints) url += `&hints=${encodeURIComponent(JSON.stringify(hints))}`;
+    const data = await api(url);
+    renderSearchResults(data);
+    if (hints) renderAiInsight(data, hints);
+  } catch (err) {
+    pane.innerHTML = `<div class="empty">检索失败：${esc(err.message)}</div>`;
+  }
+}
+
+function renderSearchResults(data) {
+  const pane = $("#searchResults");
+  const chipsBox = $("#searchChips");
+  pane.innerHTML = "";
+  chipsBox.innerHTML = "";
+
+  (data.conditions || []).forEach((c) => {
+    const chip = document.createElement("span");
+    chip.className = "chip hot";
+    chip.textContent = `${c.label}：${c.value}`;
+    chipsBox.appendChild(chip);
+  });
+  if (data.llm) {
+    const chip = document.createElement("span");
+    chip.className = "chip blue";
+    chip.textContent = "DeepSeek 已参与理解";
+    chipsBox.appendChild(chip);
+  }
+
+  if (!data.cards || !data.cards.length) {
+    const sug = (data.suggestions || [])
+      .map((s) => `<button class="chip" data-sug="${esc(s)}">${esc(s)}</button>`)
+      .join("");
+    pane.innerHTML = `<div class="empty">${esc(data.note || "没有找到匹配的商品")}</div>${
+      sug ? `<div class="search-sug"><span>试试这些：</span>${sug}</div>` : ""
+    }`;
+    return;
+  }
+
+  const label = document.createElement("div");
+  label.className = "feed-label";
+  label.textContent = `命中 ${data.cards.length} 款 · 按匹配度排序`;
+  pane.appendChild(label);
+  data.cards.forEach((p) => {
+    const card = productCardEl(p);
+    const info = card.querySelector(".info");
+    if (info) info.appendChild(buyLinksEl(p));
+    pane.appendChild(card);
+  });
+  if (data.note) {
+    const note = document.createElement("div");
+    note.className = "search-note";
+    note.textContent = data.note;
+    pane.appendChild(note);
+  }
+}
+
+$("#searchBtn").addEventListener("click", () => runSearch());
+$("#searchInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.isComposing) runSearch();
+});
+$("#searchPane").addEventListener("click", (e) => {
+  const sug = e.target.closest("[data-sug]");
+  if (sug) {
+    runSearch(sug.dataset.sug);
+    return;
+  }
+  onCardAction(e);
+});
+
+// ------------------------------------------------------------ 对话引擎（可选大模型 Key）
+const LLM_STORAGE = "xiaohan_llm_conf";
+
+function readLlmConf() {
+  try {
+    return JSON.parse(localStorage.getItem(LLM_STORAGE) || "{}") || {};
+  } catch {
+    return {};
+  }
+}
+
+function pillText(status, config) {
+  if (status && status.enabled) {
+    return `对话引擎 · ${status.model || "大模型"}`;
+  }
+  const n = config?.products || 61;
+  return `对话引擎 · 本地规则（${n} 款机型）`;
+}
+
+async function applyLlmConf(conf) {
+  const payload = { apiKey: conf.apiKey || "", apiBase: conf.apiBase || "", model: conf.model || "" };
+  const status = await api("/api/llm", { method: "POST", body: payload });
+  $("#llmPill").textContent = pillText(status, state.config);
+  $("#llmStatus").textContent = status.enabled
+    ? `当前：已启用 ${status.model}（${status.maskedKey}），本机浏览器内直连`
+    : "当前：本地规则引擎（61 款机型，无需 Key）";
+  return status;
+}
+
+async function openLlmModal() {
+  const conf = readLlmConf();
+  $("#llmKey").value = conf.apiKey || "";
+  $("#llmBase").value = conf.apiBase || "https://api.deepseek.com/v1";
+  $("#llmModel").value = conf.model || "deepseek-chat";
+  $("#llmModal").classList.remove("hidden");
+  try {
+    const status = await api("/api/llm");
+    if (status.enabled) $("#llmStatus").textContent = `当前：已启用 ${status.model}（${status.maskedKey}）`;
+  } catch {
+    /* 忽略 */
+  }
+}
+
+$("#llmPill").addEventListener("click", openLlmModal);
+$("#llmClose").addEventListener("click", () => $("#llmModal").classList.add("hidden"));
+$("#llmModal").addEventListener("click", (e) => {
+  if (e.target.id === "llmModal") $("#llmModal").classList.add("hidden");
+});
+$("#llmSave").addEventListener("click", async () => {
+  const conf = {
+    apiKey: $("#llmKey").value.trim(),
+    apiBase: $("#llmBase").value.trim() || "https://api.deepseek.com/v1",
+    model: $("#llmModel").value.trim() || "deepseek-chat",
+  };
+  if (!conf.apiKey) {
+    toast("请先填入 API Key");
+    return;
+  }
+  localStorage.setItem(LLM_STORAGE, JSON.stringify(conf));
+  try {
+    const status = await applyLlmConf(conf);
+    toast(status.enabled ? `已启用 ${status.model}，下一次对话生效` : "已保存，但引擎未识别到 Key");
+    $("#llmModal").classList.add("hidden");
+  } catch (err) {
+    toast("启用失败：" + err.message);
+  }
+});
+$("#llmClear").addEventListener("click", async () => {
+  localStorage.removeItem(LLM_STORAGE);
+  $("#llmKey").value = "";
+  try {
+    await applyLlmConf({});
+    toast("已清除 Key，回到本地规则引擎");
+  } catch (err) {
+    toast("清除失败：" + err.message);
+  }
+  $("#llmModal").classList.add("hidden");
+});
 
 document.querySelectorAll(".tab").forEach((tab) => {
   tab.addEventListener("click", () => switchTab(tab.dataset.tab));
@@ -1151,9 +1414,21 @@ async function init() {
     state.config = await api("/api/config");
     buildDialectOptions();
     const llm = state.config.llm;
-    $("#llmPill").textContent = llm.enabled ? `对话引擎 · ${llm.model}` : `对话引擎 · 本地规则（${state.config.products} 款机型）`;
+    $("#llmPill").textContent = llm.enabled
+      ? `对话引擎 · ${llm.model}`
+      : `对话引擎 · 本地规则（${state.config.products} 款机型）`;
   } catch (err) {
     toast("配置加载失败：" + err.message);
+  }
+
+  // 本机保存过的 Key：启动时重新注入引擎（只在本浏览器内生效）
+  const saved = readLlmConf();
+  if (saved.apiKey) {
+    try {
+      await applyLlmConf(saved);
+    } catch (err) {
+      console.warn("Key 注入失败", err);
+    }
   }
 
   try {

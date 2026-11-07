@@ -715,3 +715,67 @@ button { cursor: pointer; }
 @media (max-width: 1080px) {
   .only-compact { display: inline-block; }
 }
+
+/* ================= 站内检索智能体 + 引擎设置（2026-11-07） ================= */
+.pill {
+  font-family: inherit;
+  cursor: pointer;
+  transition: .16s;
+}
+.pill:hover { border-color: rgba(255,106,0,.45); color: #c85100; }
+
+.search-bar { display: flex; gap: 8px; align-items: center; }
+.search-bar input {
+  flex: 1; min-width: 0;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0 11px;
+  font-size: 12.5px;
+  color: var(--ink);
+  background: var(--surface);
+  outline: none;
+  transition: .16s;
+}
+.search-bar input:focus { border-color: rgba(255,106,0,.5); box-shadow: 0 0 0 3px rgba(255,106,0,.08); }
+.search-results { display: flex; flex-direction: column; gap: 12px; }
+.search-tip { font-size: 11px; color: var(--muted); text-align: center; padding-top: 2px; }
+.search-sug { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; font-size: 11.5px; color: var(--muted); }
+.search-sug button { cursor: pointer; font-family: inherit; }
+.search-note {
+  font-size: 11.5px; color: var(--muted);
+  background: var(--surface-2);
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 8px 10px;
+  line-height: 1.6;
+}
+.buy-links { display: flex; gap: 12px; margin-top: 8px; font-size: 11px; }
+.buy-links a { color: var(--muted); text-decoration: none; }
+.buy-links a:hover { color: var(--accent); text-decoration: underline; }
+
+.llm-desc, .llm-warn { font-size: 12px; line-height: 1.75; color: var(--ink-2); margin: 0 0 10px; }
+.llm-warn { color: #c85100; background: var(--accent-soft); border-radius: 10px; padding: 8px 10px; }
+.llm-field { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.llm-field span { flex: none; width: 62px; font-size: 12px; color: var(--muted); }
+.llm-field input {
+  flex: 1; min-width: 0; height: 34px;
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 0 10px; font-size: 12.5px; color: var(--ink);
+  background: var(--surface); outline: none;
+}
+.llm-field input:focus { border-color: rgba(255,106,0,.5); }
+.llm-status {
+  font-size: 11.5px; color: var(--muted);
+  background: var(--surface-2); border-radius: 10px; padding: 9px 10px; line-height: 1.6;
+}
+.ai-note {
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--ink-2);
+  background: linear-gradient(180deg, rgba(255,106,0,.09), rgba(255,106,0,.03));
+  border: 1px solid rgba(255,106,0,.22);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+  padding: 10px 12px;
+}

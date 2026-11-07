@@ -97,6 +97,20 @@ def handle(method, target, body_text):
             uid = _first(query, "userId", "anon")
             limit = int(_first(query, "limit", "6"))
             return _ok(engine.recommend_feed(uid, limit=limit))
+        if path == "/api/search":
+            q = _first(query, "q")
+            uid = _first(query, "userId", "anon")
+            limit = int(_first(query, "limit", "10"))
+            hints_text = _first(query, "hints")
+            hints = None
+            if hints_text:
+                try:
+                    hints = json.loads(hints_text)
+                except (json.JSONDecodeError, TypeError):
+                    hints = None
+            return _ok(engine.search_cards(q, uid, limit=limit, hints=hints))
+        if path == "/api/llm":
+            return _ok(engine.llm_status())
         if path == "/api/memory":
             uid = _first(query, "userId", "anon")
             profile = engine.get_profile(uid)
@@ -140,6 +154,11 @@ def handle(method, target, body_text):
         if path == "/api/settings":
             profile = engine.set_setting(uid, "avoidNew", bool(payload.get("avoidNew", True)))
             return _ok({"ok": True, "profile": engine.profile_summary(profile)})
+        if path == "/api/llm":
+            status = engine.set_llm_runtime(payload.get("apiKey") or "",
+                                            payload.get("apiBase") or "",
+                                            payload.get("model") or "")
+            return _ok(status)
         if path == "/api/reset":
             engine.reset_memory(uid)
             return _ok({"ok": True})
