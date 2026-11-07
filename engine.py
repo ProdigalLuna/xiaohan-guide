@@ -1566,6 +1566,14 @@ def _fit_reasons(card, raw, parsed, summary):
 
 def _plan_alternatives(cards, primary):
     others = [c for c in cards if c["id"] != primary["id"]]
+    type_word = _product_type_word({"name": primary.get("name", "")})
+    if type_word:
+        tokens = {type_word}
+        if len(type_word) >= 3:
+            tokens.add(type_word[-2:])
+        same = [c for c in others if any(t in c.get("name", "") for t in tokens)]
+        if same:
+            others = same
     if not others:
         return []
     picks = []
@@ -2263,6 +2271,10 @@ def handle_chat(user_id, message, dialect_hint=None):
             cards = recommend({"brands": [], "scenes": [], "keywords": [], "budget": None, "mentions": [], "intent": "recommend"}, profile, limit=3)
         extra = [i for i in web_ids if all(c["id"] != i for c in cards)]
         if extra:
+            type_words = _query_type_words(parsed)
+            if type_words:
+                extra = [i for i in extra
+                         if any(w in (product_by_id(i) or {}).get("name", "") for w in type_words)]
             web_cards = [product_card(product_by_id(i), profile, 88, ["本地库没有，联网查到的在售机型"])
                          for i in extra[:3]]
             cards = (web_cards + [c for c in cards if c["id"] not in web_ids])[:3]
