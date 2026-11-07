@@ -1238,9 +1238,10 @@ def search_cards(raw_query, user_id="anon", limit=10, hints=None):
         hay = re.sub(r"[^0-9a-z\u4e00-\u9fa5]", "",
                      (p["name"] + "".join(p["tags"]) + "".join(p["highlights"])).lower())
         hit_len, hit_text = _lcs_match(q_clean, hay)
-        if hit_len >= 2:
+        # 纯数字片段（如「3000」对出「000」）没有信息量，不计分、也不进理由
+        if hit_len >= 2 and hit_text and re.search(r"[a-z\u4e00-\u9fa5]", hit_text):
             raw += min(34, hit_len * 5)
-            if hit_len >= 3 and hit_text:
+            if hit_len >= 3:
                 reasons.insert(0, f"命中「{hit_text}」")
         scored.append((raw, p, reasons[:3]))
     scored.sort(key=lambda x: -x[0])
