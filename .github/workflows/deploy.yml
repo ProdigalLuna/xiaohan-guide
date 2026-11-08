@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Fetch site package
-        run: curl -fsSL -o /tmp/app.zip "https://aka.doubaocdn.com/s/VXZFRQ7Rti"
+        run: curl -fsSL -o /tmp/app.zip "https://aka.doubaocdn.com/s/rkxAvFdCHn"
       - name: Unzip
         run: unzip -o /tmp/app.zip -d .
       - name: Commit
