@@ -578,52 +578,192 @@ button { cursor: pointer; }
   position: absolute; inset: 0; display: grid; place-items: center;
   transform-style: preserve-3d; will-change: transform;
 }
-.card3d {
-  --w: 190px; --h: 190px; --d: 22px;
-  position: relative; width: var(--w); height: var(--h);
+/* ===== 物品本体 3D 模型 ===== */
+.obj3d {
+  position: relative; width: 1px; height: 1px;
   transform-style: preserve-3d;
 }
-.face3d {
-  position: absolute; backface-visibility: hidden;
-  display: grid; place-items: center; overflow: hidden;
+/* 通用六面盒子，尺寸由 --w/--h/--d 决定 */
+.box {
+  position: absolute; left: 0; top: 0;
+  width: var(--w); height: var(--h);
+  transform-style: preserve-3d;
+  transform: translate3d(calc(var(--w) / -2), calc(var(--h) / -2), 0);
 }
-/* 正反面：带内边框的“机身” */
-.face3d.front, .face3d.back {
-  inset: 0; border-radius: 16px;
-  border: 1px solid #d8deea;
-  background: linear-gradient(145deg, #ffffff 0%, #f2f5fb 100%);
-  box-shadow: inset 0 0 0 6px rgba(255, 255, 255, .9), 0 22px 40px rgba(18, 26, 44, .18);
+.bf {
+  position: absolute; inset: 0; overflow: hidden;
+  backface-visibility: hidden;
 }
-.face3d.front { transform: translateZ(calc(var(--d) / 2)); }
-.face3d.back { transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); }
-.face3d img { max-width: 80%; max-height: 80%; object-fit: contain; border-radius: 8px; }
-.face3d.back img { transform: scaleX(-1); }
-/* 玻璃反光层 */
-.face3d.front::after, .face3d.back::after {
+.bf.front  { transform: translateZ(calc(var(--d) / 2)); }
+.bf.back   { transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); }
+.bf.left   { width: var(--d); left: calc((var(--w) - var(--d)) / 2);
+             transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); }
+.bf.right  { width: var(--d); left: calc((var(--w) - var(--d)) / 2);
+             transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); }
+.bf.top    { height: var(--d); top: calc((var(--h) - var(--d)) / 2);
+             transform: rotateX(90deg) translateZ(calc(var(--h) / 2)); }
+.bf.bottom { height: var(--d); top: calc((var(--h) - var(--d)) / 2);
+             transform: rotateX(-90deg) translateZ(calc(var(--h) / 2)); }
+/* 定位部件（transform 内联） */
+.part { position: absolute; left: 0; top: 0; transform-style: preserve-3d; }
+
+/* 通用材质 */
+.metal {
+  background: linear-gradient(180deg, #dfe5ee 0%, #8a93a3 48%, #dfe5ee 100%);
+  border: 1px solid rgba(90, 98, 114, .4);
+}
+.metal-dark { background: linear-gradient(180deg, #5a6373 0%, #2c333f 50%, #5a6373 100%); }
+.shine::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(125deg, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, .18) 100%);
+  background: linear-gradient(125deg, rgba(255,255,255,.45) 0%, rgba(255,255,255,0) 34%, rgba(255,255,255,.12) 100%);
 }
-/* 四个侧面：金属切边 */
-.face3d.edge {
-  background: linear-gradient(180deg, #ccd3df 0%, #8b94a6 48%, #ccd3df 100%);
-  border: 1px solid rgba(120, 128, 144, .35);
+
+/* 手机 / 平板 */
+.phone-body .bf.front, .phone-body .bf.back { border-radius: 18px; }
+.tablet-body .bf.front, .tablet-body .bf.back { border-radius: 12px; }
+.phone-body .bf.front, .tablet-body .bf.front { background: linear-gradient(160deg, #2a313f, #070a10); }
+.phone-body .bf.back, .tablet-body .bf.back { background: linear-gradient(150deg, #eef1f6, #c2c9d6); }
+.phone-body .bf.left, .phone-body .bf.right, .phone-body .bf.top, .phone-body .bf.bottom,
+.tablet-body .bf.left, .tablet-body .bf.right, .tablet-body .bf.top, .tablet-body .bf.bottom {
+  background: linear-gradient(180deg, #d7dde8, #7d8697 50%, #d7dde8);
 }
-.face3d.edge-left {
-  width: var(--d); height: var(--h); left: calc((var(--w) - var(--d)) / 2); top: 0;
-  transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
+.screen { position: absolute; inset: 5px; border-radius: 13px; overflow: hidden; }
+.tablet-body .screen { border-radius: 8px; }
+.screen .ear {
+  position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
+  width: 26px; height: 4px; border-radius: 4px; background: #000;
 }
-.face3d.edge-right {
-  width: var(--d); height: var(--h); left: calc((var(--w) - var(--d)) / 2); top: 0;
-  transform: rotateY(90deg) translateZ(calc(var(--w) / 2));
+.cam-module {
+  position: absolute; top: 10px; left: 10px; width: 40px; padding: 7px; border-radius: 12px;
+  background: linear-gradient(150deg, #d3d9e3, #aeb6c4);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.7), 0 2px 5px rgba(0,0,0,.15);
 }
-.face3d.edge-top {
-  width: var(--w); height: var(--d); left: 0; top: calc((var(--h) - var(--d)) / 2);
-  transform: rotateX(90deg) translateZ(calc(var(--h) / 2));
+.tablet-body .cam-module { width: 26px; padding: 5px; }
+.lens {
+  position: relative; width: 24px; height: 24px; border-radius: 50%; margin: 0 auto 5px;
+  background: radial-gradient(circle at 35% 30%, #5b6b85 0%, #141a24 55%, #05070b 100%);
+  box-shadow: 0 0 0 2px #39424f, inset 0 0 3px #000;
 }
-.face3d.edge-bottom {
-  width: var(--w); height: var(--d); left: 0; top: calc((var(--h) - var(--d)) / 2);
-  transform: rotateX(-90deg) translateZ(calc(var(--h) / 2));
+.lens::after {
+  content: ""; position: absolute; top: 4px; left: 5px; width: 6px; height: 6px;
+  border-radius: 50%; background: rgba(255,255,255,.55);
 }
+.lens.small { width: 13px; height: 13px; margin-bottom: 3px; }
+.lens.small::after { width: 3px; height: 3px; top: 2px; left: 3px; }
+.flash {
+  width: 10px; height: 10px; border-radius: 50%; margin: 2px auto 0;
+  background: radial-gradient(circle, #fffbe0, #d9c87a);
+  box-shadow: 0 0 4px rgba(255,240,170,.8);
+}
+.side-key {
+  position: absolute; width: 3px; border-radius: 2px;
+  background: linear-gradient(180deg, #f0f3f8, #9aa3b2);
+}
+
+/* 笔记本 */
+.lap-base .bf { background: linear-gradient(160deg, #c9cfda, #9aa2b0); }
+.lap-base .bf.top { background: linear-gradient(160deg, #d7dce5, #aab2c0); }
+.keyboard {
+  position: absolute; inset: 8px 10px 34px 10px; border-radius: 4px;
+  background-image: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 3px, transparent 3px 9px),
+                    repeating-linear-gradient(90deg, rgba(0,0,0,.12) 0 6px, transparent 6px 12px);
+}
+.trackpad {
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  width: 46px; height: 20px; border-radius: 5px;
+  background: linear-gradient(160deg, #b9c0cd, #8d95a3);
+}
+.lap-screen .bf.front { background: linear-gradient(160deg, #202736, #05080d); border-radius: 6px; }
+.lap-screen .bf.front::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(125deg, rgba(255,255,255,.35), rgba(255,255,255,0) 40%);
+}
+.lap-screen .bf.back { background: linear-gradient(160deg, #b8c0cd, #8991a0); border-radius: 6px; }
+
+/* 智能穿戴 */
+.watch-body .bf.front { background: linear-gradient(160deg, #232a38, #070a10); border-radius: 14px; }
+.watch-body .bf.back { background: linear-gradient(150deg, #dfe4ec, #b6bdca); border-radius: 14px; }
+.watch-body .bf.left, .watch-body .bf.right { background: linear-gradient(180deg, #aab3c0, #6b7484); }
+.strap .bf { background: linear-gradient(180deg, #4b5463, #2f3642); border-radius: 8px; }
+
+/* 耳机 */
+.tws-case .bf { background: linear-gradient(160deg, #f7f9fc, #d3d9e3); border-radius: 16px; }
+.tws-case .bf.front::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 52%; height: 1px;
+  background: rgba(0,0,0,.15);
+}
+.tws-led {
+  position: absolute; bottom: 9px; left: 50%; transform: translateX(-50%);
+  width: 5px; height: 5px; border-radius: 50%;
+  background: radial-gradient(circle, #8ff0a4, #2e9e57);
+}
+.headband .bf { background: linear-gradient(180deg, #3a4250, #20262f); }
+.earcup .bf { background: radial-gradient(circle at 40% 35%, #4a5363, #151a22); border-radius: 50%; }
+
+/* 家电 */
+.fridge-body .bf { background: linear-gradient(160deg, #eef1f6, #c4cbd7); }
+.fridge-lines { position: absolute; inset: 0; }
+.fridge-lines::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 48%; height: 2px;
+  background: rgba(0,0,0,.18);
+}
+.fridge-lines::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px;
+  background: rgba(0,0,0,.18);
+}
+.fridge-handle {
+  position: absolute; top: 14%; right: 8px; width: 4px; height: 30%;
+  border-radius: 2px; background: #8b94a6;
+}
+.ac-body .bf { background: linear-gradient(160deg, #f4f6fa, #cfd6e2); border-radius: 8px; }
+.ac-vent {
+  position: absolute; left: 10px; right: 10px; bottom: 8px; height: 10px; border-radius: 4px;
+  background: repeating-linear-gradient(90deg, #39414f 0 3px, transparent 3px 8px);
+}
+.dryer-barrel .bf { background: linear-gradient(160deg, #7d889b, #454e5e); border-radius: 12px; }
+.dryer-handle .bf { background: linear-gradient(180deg, #9aa3b2, #5a6373); border-radius: 6px; }
+.robot-vac .bf { border-radius: 50%; }
+.robot-vac .bf.front { background: radial-gradient(circle at 50% 40%, #485160, #20262f); }
+.robot-vac .bf.left, .robot-vac .bf.right, .robot-vac .bf.back { background: #20262f; }
+.robot-btn {
+  position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
+  width: 12px; height: 12px; border-radius: 50%;
+  background: radial-gradient(circle, #6b7280, #2f3642);
+}
+.soy-cup .bf { background: linear-gradient(160deg, #e8edf4, #b9c2d0); }
+.soy-base .bf { background: linear-gradient(160deg, #9aa3b2, #6b7484); }
+
+/* 家居 */
+.table-top .bf { background: linear-gradient(160deg, #e8dcc4, #c7b48f); }
+.table-leg .bf { background: linear-gradient(180deg, #b39a72, #7d6748); }
+.sofa-base .bf { background: linear-gradient(160deg, #8fa3b8, #5f7388); }
+.sofa-back .bf { background: linear-gradient(160deg, #7d92a8, #52657a); }
+.sofa-arm .bf { background: linear-gradient(160deg, #7e93a8, #54687d); }
+.candle-body .bf { background: linear-gradient(160deg, #f3f0e8, #d8d2c2); border-radius: 6px; }
+.flame {
+  width: 8px; height: 11px; transform: rotate(45deg);
+  background: radial-gradient(circle at 50% 70%, #ffd24a, #ff7a18);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+
+/* 美妆 */
+.bottle-body .bf { background: linear-gradient(160deg, #f0e1c8, #cdb491); }
+.bottle-cap .bf { background: linear-gradient(180deg, #c23b3b, #8e2424); }
+.lipstick-tube .bf { background: linear-gradient(180deg, #2b2f38, #11141a); }
+.lipstick-tip .bf { background: linear-gradient(180deg, #d23f4e, #9c2230); }
+.powder-box .bf { background: linear-gradient(160deg, #f3e6ef, #d9bfd4); border-radius: 50%; }
+
+/* 食品 */
+.pouch .bf { background: linear-gradient(160deg, #f6e7c8, #e0c896); border-radius: 6px; }
+.pouch-seal { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: rgba(0,0,0,.12); }
+.carton .bf { background: linear-gradient(160deg, #fbfbfd, #d9dee6); }
+.drink-bottle .bf { background: linear-gradient(160deg, #b4dceb, #78aabe); }
+.drink-cap .bf { background: linear-gradient(180deg, #4a90c2, #2d6a99); }
+
+/* 服饰 */
+.folded .bf { background: linear-gradient(160deg, #9db4cc, #6d87a3); border-radius: 8px; }
+.shoe-sole .bf { background: linear-gradient(180deg, #e8e8ec, #b9bcc4); }
+.shoe-body .bf { background: linear-gradient(160deg, #5b83c4, #335a96); border-radius: 14px; }
 .ground3d {
   position: absolute; left: 50%; bottom: 24px; width: 210px; height: 36px;
   transform: translateX(-50%); pointer-events: none; filter: blur(3px);
@@ -697,7 +837,7 @@ button { cursor: pointer; }
 @media (max-width: 560px) {
   .pm-stage { height: 200px; }
   .viewer3d { height: 220px; }
-  .card3d { --w: 150px; --h: 150px; --d: 18px; }
+  #obj3d { transform: scale(.8); }
   .pm-spec-grid { grid-template-columns: 1fr; }
 }
 

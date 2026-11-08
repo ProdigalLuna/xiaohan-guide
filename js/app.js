@@ -1182,13 +1182,10 @@ function renderProductModal(d) {
   stage.innerHTML = "";
   stage.appendChild(makeMedia());
 
-  // 3D 正反面
-  const front = $("#pmFaceFront");
-  const back = $("#pmFaceBack");
-  front.innerHTML = "";
-  back.innerHTML = "";
-  front.appendChild(makeMedia());
-  back.appendChild(makeMedia());
+  // 3D 物品本体模型
+  const obj = $("#obj3d");
+  obj.innerHTML = "";
+  obj.appendChild(buildObjectModel(d));
 
   // 有真实 GLB 模型时优先用 <model-viewer>，否则回退到图片立体卡片
   const hasModel = !!d.model3d;
@@ -1259,6 +1256,211 @@ function setProductView(view) {
   } else {
     stop3d();
   }
+}
+
+// ---- 物品本体 3D 模型构建器（纯 CSS 3D，按品类组装）----
+const px = (n) => n + "px";
+const t3 = (x, y, z) => `translate3d(${x}px,${y}px,${z}px)`;
+
+function hEl(tag, cls, html) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html != null) e.innerHTML = html;
+  return e;
+}
+// 六面盒子：w 宽 / h 高 / d 厚；faces 为各面内容（元素或 HTML）
+function makeBox(cls, w, h, d, faces) {
+  const box = hEl("div", "box " + cls);
+  box.style.setProperty("--w", px(w));
+  box.style.setProperty("--h", px(h));
+  box.style.setProperty("--d", px(d));
+  ["front", "back", "left", "right", "top", "bottom"].forEach((n) => {
+    const bf = hEl("div", "bf " + n);
+    const c = faces && faces[n];
+    if (c) { if (typeof c === "string") bf.innerHTML = c; else bf.appendChild(c); }
+    box.appendChild(bf);
+  });
+  return box;
+}
+// 定位部件：transform 定位，内部盒子中心与部件原点重合
+function makePart(cls, transform, children) {
+  const p = hEl("div", "part" + (cls ? " " + cls : ""));
+  if (transform) p.style.transform = transform;
+  (children || []).forEach((c) => p.appendChild(c));
+  return p;
+}
+function camModule(tablet) {
+  const m = hEl("div", "cam-module");
+  if (tablet) { m.appendChild(hEl("div", "lens small")); m.appendChild(hEl("div", "flash")); return m; }
+  m.appendChild(hEl("div", "lens"));
+  m.appendChild(hEl("div", "lens small"));
+  m.appendChild(hEl("div", "lens small"));
+  m.appendChild(hEl("div", "flash"));
+  return m;
+}
+function sideKey(side, top, height) {
+  const k = hEl("div", "side-key");
+  k.style[side] = "1px";
+  k.style.top = px(top);
+  k.style.height = px(height);
+  return k;
+}
+
+// 手机
+function modelPhone() {
+  const front = hEl("div", "screen");
+  front.appendChild(hEl("div", "ear"));
+  const body = makeBox("phone-body", 100, 196, 12, {
+    front,
+    back: camModule(false),
+    right: sideKey("right", 42, 42),
+    left: sideKey("left", 36, 28),
+  });
+  const second = sideKey("left", 72, 28);
+  body.querySelector(".bf.left").appendChild(second);
+  return makePart("", t3(0, 0, 0), [body]);
+}
+// 平板
+function modelTablet() {
+  const front = hEl("div", "screen");
+  front.appendChild(hEl("div", "ear"));
+  const body = makeBox("tablet-body", 150, 195, 10, {
+    front,
+    back: camModule(true),
+    right: sideKey("right", 50, 30),
+  });
+  return makePart("", "", [body]);
+}
+// 笔记本
+function modelLaptop() {
+  const keyboard = hEl("div", "keyboard");
+  const trackpad = hEl("div", "trackpad");
+  const baseBox = makeBox("lap-base", 170, 105, 6, { front: keyboard });
+  baseBox.querySelector(".bf.front").appendChild(trackpad);
+  const baseWrap = makePart("", "translateY(30px) rotateX(90deg)", [baseBox]);
+
+  const screenBox = makeBox("lap-screen", 170, 108, 5, {});
+  const screenHinge = makePart("", t3(0, 27, -52.5), [
+    makePart("", "rotateX(12deg)", [
+      makePart("", "translateY(-54px)", [screenBox]),
+    ]),
+  ]);
+  return makePart("", "", [baseWrap, screenHinge]);
+}
+// 智能穿戴
+function modelWear(d) {
+  const band = (d.name || "").includes("手环");
+  const w = band ? 32 : 52, h = band ? 46 : 60, dep = band ? 8 : 10;
+  const body = makeBox("watch-body", w, h, dep, { front: hEl("div", "screen shine") });
+  const sw = band ? 18 : 26, sl = band ? 80 : 70;
+  const strapUp = makePart("", t3(0, -(h / 2 + sl / 2 - 4), 0), [makeBox("strap", sw, sl, 4, {})]);
+  const strapDown = makePart("", t3(0, h / 2 + sl / 2 - 4, 0), [makeBox("strap", sw, sl, 4, {})]);
+  return makePart("", "", [strapUp, strapDown, makePart("", "", [body])]);
+}
+// 耳机
+function modelAudio(d) {
+  const name = d.name || "";
+  if (name.includes("OpenRun") || name.includes("QuietComfort")) {
+    const bandBox = makeBox("headband", 110, 14, 8, {});
+    const headband = makePart("", t3(0, -45, 0), [bandBox]);
+    const cups = [-48, 48].map((x) => makePart("", t3(x, -12, 0), [makeBox("earcup", 40, 48, 18, {})]));
+    return makePart("", "", [headband, ...cups]);
+  }
+  const box = makeBox("tws-case", 78, 52, 30, { front: hEl("div", "tws-led") });
+  return makePart("", "", [box]);
+}
+// 家电
+function modelAppliance(d) {
+  const name = d.name || "";
+  if (name.includes("冰箱")) {
+    return makePart("", "", [makeBox("fridge-body", 105, 160, 60, {
+      front: hEl("div", "fridge-lines"),
+    })]);
+  }
+  if (name.includes("空调")) {
+    return makePart("", "", [makeBox("ac-body", 160, 48, 30, { front: hEl("div", "ac-vent") })]);
+  }
+  if (name.includes("吹风机")) {
+    const barrel = makePart("", t3(0, -20, 0), [makeBox("dryer-barrel", 45, 65, 45, {})]);
+    const handle = makePart("", t3(0, 38, 0) + " rotateZ(12deg)", [makeBox("dryer-handle", 20, 55, 14, {})]);
+    return makePart("", "", [barrel, handle]);
+  }
+  if (name.includes("扫地")) {
+    return makePart("", "", [makeBox("robot-vac", 115, 115, 14, { front: hEl("div", "robot-btn") })]);
+  }
+  // 破壁豆浆机
+  const cup = makePart("", t3(0, -15, 0), [makeBox("soy-cup", 55, 85, 55, {})]);
+  const base = makePart("", t3(0, 40, 0), [makeBox("soy-base", 65, 18, 60, {})]);
+  return makePart("", "", [cup, base]);
+}
+// 家居
+function modelHome(d) {
+  const name = d.name || "";
+  if (name.includes("书桌") || name.includes("餐桌")) {
+    const top = makePart("", "translateY(8px) rotateX(90deg)", [makeBox("table-top", 165, 85, 6, {})]);
+    const legs = [];
+    [-72, 72].forEach((x) => [-33, 33].forEach((z) => {
+      legs.push(makePart("", t3(x, 46, z), [makeBox("table-leg", 8, 76, 8, {})]));
+    }));
+    return makePart("", "", [top, ...legs]);
+  }
+  if (name.includes("沙发")) {
+    const base = makePart("", t3(0, 25, 0), [makeBox("sofa-base", 155, 55, 45, {})]);
+    const back = makePart("", t3(0, -25, -20), [makeBox("sofa-back", 155, 65, 14, {})]);
+    const arms = [-67, 67].map((x) => makePart("", t3(x, 25, 0), [makeBox("sofa-arm", 22, 55, 45, {})]));
+    return makePart("", "", [base, back, ...arms]);
+  }
+  // 香薰蜡烛
+  const body = makePart("", t3(0, 15, 0), [makeBox("candle-body", 38, 48, 38, {})]);
+  const flame = makePart("", t3(0, -16, 0), [hEl("div", "flame")]);
+  return makePart("", "", [body, flame]);
+}
+// 美妆
+function modelBeauty(d) {
+  const name = d.name || "";
+  if (name.includes("口红")) {
+    const tube = makePart("", t3(0, 15, 0), [makeBox("lipstick-tube", 16, 60, 16, {})]);
+    const tip = makePart("", t3(0, -24, 0), [makeBox("lipstick-tip", 12, 18, 12, {})]);
+    return makePart("", "", [tube, tip]);
+  }
+  if (name.includes("蜜粉")) {
+    return makePart("", t3(0, 20, 0), [makeBox("powder-box", 65, 22, 65, {})]);
+  }
+  const body = makePart("", t3(0, 5, 0), [makeBox("bottle-body", 42, 100, 28, {})]);
+  const cap = makePart("", t3(0, -56, 0), [makeBox("bottle-cap", 26, 22, 24, {})]);
+  return makePart("", "", [body, cap]);
+}
+// 食品
+function modelFood(d) {
+  const name = d.name || "";
+  if (name.includes("气泡水")) {
+    const body = makePart("", "", [makeBox("drink-bottle", 38, 140, 28, {})]);
+    const cap = makePart("", t3(0, -77, 0), [makeBox("drink-cap", 22, 14, 22, {})]);
+    return makePart("", "", [body, cap]);
+  }
+  if (name.includes("牛奶")) {
+    return makePart("", t3(0, 8, 0), [makeBox("carton", 48, 115, 34, {})]);
+  }
+  const seal = hEl("div", "pouch-seal");
+  return makePart("", t3(0, 5, 0), [makeBox("pouch", 85, 125, 32, { front: seal })]);
+}
+// 服饰
+function modelClothing(d) {
+  const name = d.name || "";
+  if (name.includes("鞋")) {
+    const sole = makePart("", t3(0, 30, 0), [makeBox("shoe-sole", 95, 14, 38, {})]);
+    const body = makePart("", t3(0, 8, 0), [makeBox("shoe-body", 90, 40, 34, {})]);
+    return makePart("", "", [sole, body]);
+  }
+  return makePart("", t3(0, 10, 0) + " rotateX(55deg)", [makeBox("folded", 115, 85, 12, {})]);
+}
+function buildObjectModel(d) {
+  const map = {
+    "手机": modelPhone, "平板": modelTablet, "笔记本": modelLaptop,
+    "智能穿戴": modelWear, "耳机": modelAudio, "家电": modelAppliance,
+    "家居": modelHome, "美妆": modelBeauty, "食品": modelFood, "服饰": modelClothing,
+  };
+  return (map[d.category] || modelPhone)(d);
 }
 
 // ---- 3D 交互视图：拖动旋转 / 滚轮缩放 / 双击复位
