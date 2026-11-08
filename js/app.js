@@ -1199,7 +1199,7 @@ function renderProductModal(d) {
   modelWrap.innerHTML = "";
   $("#pm3dTip").textContent = hasModel
     ? "3D 模型 · 拖动旋转 / 滚轮缩放 / 双指缩放"
-    : "3D 交互视图 · 按住拖动可 360° 旋转";
+    : "3D 立体视图 · 拖动旋转 / 滚轮缩放 / 双击复位";
 
   const specs = (d.specs || [])
     .map((s) => `<div class="pm-spec"><b>${esc(s.label)}</b><span>${esc(s.value)}</span></div>`)
@@ -1262,17 +1262,36 @@ function setProductView(view) {
 }
 
 // ---- 3D 交互视图：拖动旋转 / 滚轮缩放 / 双击复位
-const view3d = { rotX: 10, rotY: -18, zoom: 1, drag: false, x: 0, y: 0, idleAt: 0, raf: 0, bound: false };
+const view3d = {
+  rotX: 10, rotY: -18, zoom: 1,
+  velX: 0, velY: 0,
+  drag: false, x: 0, y: 0,
+  idleAt: 0, raf: 0, bound: false, auto: true,
+};
+
+function normAngle(a) {
+  const n = ((a % 360) + 360) % 360;
+  return n > 180 ? n - 360 : n;
+}
 
 function apply3d() {
   const stage = $("#stage3d");
   if (stage) stage.style.transform = `rotateX(${view3d.rotX}deg) rotateY(${view3d.rotY}deg) scale(${view3d.zoom})`;
+  const ground = $("#pm3dGround");
+  if (ground) {
+    ground.style.transform = `translateX(-50%) scale(${view3d.zoom})`;
+    ground.style.opacity = String(Math.max(0.45, 1 - Math.abs(view3d.rotX) / 120));
+  }
+  const ang = $("#pm3dAngle");
+  if (ang) ang.textContent = `X ${Math.round(normAngle(view3d.rotX))}° · Y ${Math.round(normAngle(view3d.rotY))}°`;
 }
 
 function reset3d() {
   view3d.rotX = 10;
   view3d.rotY = -18;
   view3d.zoom = 1;
+  view3d.velX = 0;
+  view3d.velY = 0;
   view3d.idleAt = performance.now();
   apply3d();
 }
@@ -1283,18 +1302,24 @@ function bind3d() {
   const box = $("#viewer3d");
 
   box.addEventListener("pointerdown", (e) => {
-    if (e.target.closest(".viewer3d-reset")) return;
+    if (e.target.closest("button")) return;
     view3d.drag = true;
     view3d.x = e.clientX;
     view3d.y = e.clientY;
+    view3d.velX = 0;
+    view3d.velY = 0;
     view3d.idleAt = performance.now();
     box.setPointerCapture?.(e.pointerId);
   });
 
   box.addEventListener("pointermove", (e) => {
     if (!view3d.drag) return;
-    view3d.rotY += (e.clientX - view3d.x) * 0.5;
-    view3d.rotX = Math.max(-40, Math.min(40, view3d.rotX - (e.clientY - view3d.y) * 0.3));
+    const dx = e.clientX - view3d.x;
+    const dy = e.clientY - view3d.y;
+    view3d.velY = dx * 0.5;
+    view3d.velX = -dy * 0.3;
+    view3d.rotY += view3d.velY;
+    view3d.rotX = Math.max(-40, Math.min(40, view3d.rotX + view3d.velX));
     view3d.x = e.clientX;
     view3d.y = e.clientY;
     view3d.idleAt = performance.now();
@@ -1314,6 +1339,8 @@ function bind3d() {
     (e) => {
       e.preventDefault();
       view3d.zoom = Math.max(0.7, Math.min(1.7, view3d.zoom + (e.deltaY > 0 ? -0.06 : 0.06)));
+      view3d.velX = 0;
+      view3d.velY = 0;
       view3d.idleAt = performance.now();
       apply3d();
     },
@@ -1324,6 +1351,20 @@ function bind3d() {
   $("#pm3dReset").addEventListener("click", (e) => {
     e.stopPropagation();
     reset3d();
+  });
+
+  const setZoom = (delta) => {
+    view3d.zoom = Math.max(0.7, Math.min(1.7, view3d.zoom + delta));
+    view3d.idleAt = performance.now();
+    apply3d();
+  };
+  $("#pm3dZoomIn").addEventListener("click", (e) => { e.stopPropagation(); setZoom(0.12); });
+  $("#pm3dZoomOut").addEventListener("click", (e) => { e.stopPropagation(); setZoom(-0.12); });
+  $("#pm3dAuto").addEventListener("click", (e) => {
+    e.stopPropagation();
+    view3d.auto = !view3d.auto;
+    e.currentTarget.classList.toggle("on", view3d.auto);
+    view3d.idleAt = performance.now();
   });
 }
 
@@ -1337,11 +1378,26 @@ function start3d() {
       view3d.raf = 0;
       return;
     }
-    // 松手 2 秒后恢复缓慢自转
-    if (view3d.drag) view3d.idleAt = performance.now();
-    else if (performance.now() - view3d.idleAt > 2000) {
-      view3d.rotY += 0.4;
-      apply3d();
+    const now = performance.now();
+    if (view3d.drag) {
+      view3d.idleAt = now;
+    } else {
+      // 松手惯性：速度逐帧衰减
+      if (Math.abs(view3d.velY) > 0.02 || Math.abs(view3d.velX) > 0.02) {
+        view3d.rotY += view3d.velY;
+        view3d.rotX = Math.max(-40, Math.min(40, view3d.rotX + view3d.velX));
+        view3d.velY *= 0.94;
+        view3d.velX *= 0.94;
+        apply3d();
+      } else {
+        view3d.velX = 0;
+        view3d.velY = 0;
+      }
+      // 静止 2 秒后，若开启自动旋转则缓慢自转
+      if (view3d.auto && now - view3d.idleAt > 2000) {
+        view3d.rotY += 0.4;
+        apply3d();
+      }
     }
     view3d.raf = requestAnimationFrame(loop);
   };

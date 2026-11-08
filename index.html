@@ -142,9 +142,19 @@
             <div class="card3d" id="card3d">
               <div class="face3d front" id="pmFaceFront"></div>
               <div class="face3d back" id="pmFaceBack"></div>
+              <div class="face3d edge edge-left"></div>
+              <div class="face3d edge edge-right"></div>
+              <div class="face3d edge edge-top"></div>
+              <div class="face3d edge edge-bottom"></div>
             </div>
           </div>
-          <div class="ground3d"></div>
+          <div class="ground3d" id="pm3dGround"></div>
+          <div class="viewer3d-ctrl">
+            <button id="pm3dZoomOut" title="缩小">−</button>
+            <button id="pm3dZoomIn" title="放大">+</button>
+            <button id="pm3dAuto" class="on" title="自动旋转开关">自动旋转</button>
+          </div>
+          <div class="viewer3d-angle" id="pm3dAngle">X 10° · Y -18°</div>
           <div class="viewer3d-hint">拖动旋转 · 滚轮缩放 · 双击复位</div>
           <button class="viewer3d-reset" id="pm3dReset">复位</button>
         </div>
