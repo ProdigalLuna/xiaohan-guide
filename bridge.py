@@ -134,7 +134,8 @@ def handle(method, target, body_text):
             message = (payload.get("message") or "").strip()
             if not message:
                 return _ok({"error": "message 不能为空"}, 400)
-            return _ok(smart_agent.handle_chat(uid, message, payload.get("dialect")))
+            return _ok(smart_agent.handle_chat(uid, message, payload.get("dialect"),
+                                               payload.get("_net")))
         if path == "/api/compare":
             ids = payload.get("ids") or []
             if len(ids) < 2:
