@@ -19,6 +19,7 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 import engine  # noqa: E402
+import smart_agent  # noqa: E402
 
 JSON_CT = "application/json; charset=utf-8"
 XLSX_CT = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -133,7 +134,7 @@ def handle(method, target, body_text):
             message = (payload.get("message") or "").strip()
             if not message:
                 return _ok({"error": "message 不能为空"}, 400)
-            return _ok(engine.handle_chat(uid, message, payload.get("dialect")))
+            return _ok(smart_agent.handle_chat(uid, message, payload.get("dialect")))
         if path == "/api/compare":
             ids = payload.get("ids") or []
             if len(ids) < 2:
@@ -168,7 +169,7 @@ def handle(method, target, body_text):
         if path == "/api/memory":
             engine.reset_memory(_first(query, "userId", "anon"))
             return _ok({"ok": True})
-        return _ok({"error": "unknown endpoint"}, 404)
+        return _ok({"error": "unknown endpoint"}, 405)
 
     return _ok({"error": "method not allowed"}, 405)
 
@@ -182,6 +183,10 @@ def handle_json(method, target, body_text):
     return json.dumps(result, ensure_ascii=False)
 
 
+# JS 侧通过 __main__ 全局读取
+bridge_handle = handle_json
+
+
 def warmup():
     """预热：让首次对话不至于等待太久。"""
     try:
@@ -189,7 +194,3 @@ def warmup():
         return "ok"
     except Exception as exc:  # noqa: BLE001
         return "warmup failed: %s" % exc
-
-
-# JS 侧通过 __main__ 全局读取
-bridge_handle = handle_json
