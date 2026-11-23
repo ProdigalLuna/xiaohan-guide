@@ -495,7 +495,7 @@ function planCardEl(plan, compact = false) {
     <div class="plan-primary">
       ${plan.primary.image ? `<img src="${esc(plan.primary.image)}" alt="" loading="lazy">` : ""}
       <div class="plan-primary-info">
-        <div class="plan-pname">${esc(plan.primary.name)}<span class="plan-price">¥${plan.primary.price}</span></div>
+        <div class="plan-pname">${esc(plan.primary.name)}<span class="plan-price">¥${esc(plan.primary.price)}</span></div>
         <div class="plan-sub">好评 ${esc(plan.primary.ratingText)} · 销量 ${esc(plan.primary.salesText)}</div>
       </div>
     </div>
@@ -842,8 +842,8 @@ async function llmCall(messages, { maxTokens = 320, temperature = 0.2, json = fa
 const HINT_SYSTEM = [
   "你是电商导购的检索解析器。把用户的中文购物需求解析成 JSON，只输出 JSON，不要解释。",
   "字段：budgetMin（整数元，未知填 null）、budgetMax（整数元，未知填 null）、",
-  "brands（明确要求的品牌数组）、categories（只能是：手机/笔记本/平板/耳机/智能穿戴/家电/美妆/食品/服饰/家居）、",
-  "needs（场景词，只能取：拍照/游戏/续航/快充/小屏/大屏/轻薄/性价比/商务/折叠/系统/自拍/信号/办公/性能/音乐/通勤/健康/居家/护肤/运动/户外/零食）、",
+  "brands（明确要求的品牌数组）、categories（只能是：手机/笔记本/平板/耳机/智能穿戴/家电）、",
+  "needs（场景词，只能取：拍照/游戏/续航/快充/小屏/大屏/轻薄/性价比/商务/折叠/系统/自拍/信号/办公/性能/音乐/通勤/健康/居家）、",
   "keywords（商品名或特征词数组）、exclude（明确不要的品牌或属性数组）。",
   "价格换算：一千出头≈1000-1500；两千以内≈0-2000；三千左右≈2500-3500；四千档≈3500-4500。",
 ].join("");
@@ -1012,9 +1012,10 @@ async function applyLlmConf(conf) {
   const payload = { apiKey: conf.apiKey || "", apiBase: conf.apiBase || "", model: conf.model || "" };
   const status = await api("/api/llm", { method: "POST", body: payload });
   $("#llmPill").textContent = pillText(status, state.config);
+  const n = state.config?.products || 61;
   $("#llmStatus").textContent = status.enabled
     ? `当前：已启用 ${status.model}（${status.maskedKey}），本机浏览器内直连`
-    : "当前：本地规则引擎（61 款机型，无需 Key）";
+    : "当前：本地规则引擎（" + n + " 款机型，无需 Key）";
   return status;
 }
 
@@ -1651,9 +1652,9 @@ function welcome() {
   addBotMessage({
     markdown: true,
     reply:
-      "我是小函，你的智能导购助手。\n" +
+      "我是小函，为您的智能产品保驾护航。\n" +
       "\n**我能做什么**\n" +
-      "- 按预算 / 场景挑手机、电脑、耳机、家电、美妆、食品\n" +
+      "- 按预算 / 场景挑手机、电脑、平板、耳机、智能穿戴、智能家电\n" +
       "- 发淘宝、京东链接 → 自动解析参数，并对比 3-5 款同价位竞品\n" +
       "- 任意两款商品对比，可导出一份 Excel 表格\n" +
       "\n**怎么输入（两种都行）**\n" +
