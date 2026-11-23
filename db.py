@@ -20,6 +20,9 @@ SQLITE_PATH = os.path.join(WRITE_DIR, "shop.db")
 CATALOG_PATH = os.path.join(DATA_DIR, "catalog.json")
 LEGACY_MEMORY = os.path.join(DATA_DIR, "memory.json")
 
+# 只保留智能产品：手机、电脑、平板、耳机、智能穿戴、智能家电
+SMART_CATEGORIES = ("手机", "笔记本", "平板", "耳机", "智能穿戴", "家电")
+
 _lock = threading.RLock()
 _STATE = {"backend": None, "warning": ""}
 
@@ -60,10 +63,14 @@ MYSQL_SCHEMA = [
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
     """CREATE TABLE IF NOT EXISTS memory (
         user_id VARCHAR(128) PRIMARY KEY,
-        payload LONGTEXT NOT NULL,
+        payload TEXT NOT NULL,
         updated_at DATETIME
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4""",
 ]
+
+
+def _is_smart(product):
+    return bool(product) and product.get("category") in SMART_CATEGORIES
 
 
 def _conf():
@@ -125,6 +132,18 @@ def _ensure_schema(driver, conn):
                 cur.execute(statement)
 
 
+def _purge_non_smart(driver, conn):
+    """永久移除旧库中的非智能产品，保证升级后不再出现。"""
+    if driver == "sqlite":
+        marks = ",".join("?" for _ in SMART_CATEGORIES)
+        conn.execute(f"DELETE FROM products WHERE category NOT IN ({marks})", SMART_CATEGORIES)
+        conn.commit()
+    else:
+        marks = ",".join(["%s"] * len(SMART_CATEGORIES))
+        with conn.cursor() as cur:
+            cur.execute(f"DELETE FROM products WHERE category NOT IN ({marks})", SMART_CATEGORIES)
+
+
 def _decode(row_payload):
     if isinstance(row_payload, (bytes, bytearray)):
         row_payload = row_payload.decode("utf-8")
@@ -140,7 +159,10 @@ def init():
         if total == 0 and os.path.exists(CATALOG_PATH):
             with open(CATALOG_PATH, "r", encoding="utf-8") as f:
                 catalog = json.load(f)
+            catalog = [p for p in catalog if _is_smart(p)]
             _upsert(driver, conn, catalog)
+        # 旧库升级：清掉非智能产品
+        _purge_non_smart(driver, conn)
         if driver == "sqlite" and count_memory(driver, conn) == 0 and os.path.exists(LEGACY_MEMORY):
             try:
                 with open(LEGACY_MEMORY, "r", encoding="utf-8") as f:
@@ -202,6 +224,7 @@ def load_products(origin=None):
                 items.append(_decode(row[0]))
             except (json.JSONDecodeError, TypeError):
                 continue
+        items = [p for p in items if _is_smart(p)]
         items.sort(key=lambda p: (p.get("category") or "", -float(p.get("price") or 0)))
         return items
     finally:
@@ -218,7 +241,10 @@ def load_product(product_id):
             cur = conn.cursor()
             cur.execute(sql, (product_id,))
         row = cur.fetchone()
-        return _decode(row[0]) if row else None
+        if not row:
+            return None
+        product = _decode(row[0])
+        return product if _is_smart(product) else None
     except (sqlite3.Error, json.JSONDecodeError):
         return None
     finally:
@@ -306,7 +332,7 @@ def save_memory(user_id, profile):
                 with conn.cursor() as cur:
                     cur.execute(
                         """INSERT INTO memory (user_id, payload, updated_at) VALUES (%s, %s, %s)
-                           ON DUPLICATE KEY UPDATE payload=VALUES(payload), updated_at=VALUES(updated_at)""",
+                        ON DUPLICATE KEY UPDATE payload=VALUES(payload), updated_at=VALUES(updated_at)""",
                         (user_id, payload, now),
                     )
         finally:
