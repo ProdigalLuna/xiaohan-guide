@@ -39,6 +39,9 @@ BRAND_COLORS = {
     "三星": ("#1f4cbf", "#6f93ff"),
 }
 
+# 只保留智能产品品类
+SMART_CATEGORIES = {"手机", "笔记本", "平板", "耳机", "智能穿戴", "家电"}
+
 TIER_MAP = {"高奢": "luxury", "热门": "popular", "经济": "economy", "小众": "niche",
             "luxury": "luxury", "popular": "popular", "economy": "economy", "niche": "niche"}
 
@@ -59,10 +62,6 @@ SCENE_HINTS = {
     "通勤": ["通勤", "降噪", "便携"],
     "健康": ["心率", "血氧", "睡眠", "监测"],
     "居家": ["家用", "家居", "客厅", "厨房", "清洁"],
-    "护肤": ["护肤", "精华", "保湿", "修护"],
-    "运动": ["运动", "跑步", "骑行", "健身"],
-    "户外": ["户外", "露营", "徒步", "防水"],
-    "零食": ["零食", "坚果", "酸奶", "冲泡"],
 }
 
 # ---------------------------------------------------------------- 配置
@@ -267,12 +266,12 @@ def _llm_json(system, user, max_tokens=900, timeout=20):
 
 EXTRACT_SYSTEM = (
     "你是商品信息抽取器。根据搜索摘要抽取 1-3 个真实在售的同品类商品，只输出 JSON："
-    '{"products":[{"name":"完整型号名","category":"手机/笔记本/平板/耳机/智能穿戴/家电/美妆/食品/服饰/家居/其他",'
+    '{"products":[{"name":"完整型号名","category":"手机/笔记本/平板/耳机/智能穿戴/家电",'
     '"brand":"品牌名","brandTier":"高奢/热门/经济/小众","price":整数元,'
     '"tags":["最多4个短标签"],"highlights":["最多3条亮点"],"audience":"一句话适合人群",'
     '"environments":["室内","室外"],"specs":{"参数名":"参数值"}}]}。'
     "规则：价格必须是摘要中出现的整数人民币；摘要没提到的字段给空数组/空对象；不要臆造未出现的型号；"
-    "摘要里没有明确价格时返回 {\"products\":[]}。"
+    "只保留智能产品；摘要里没有明确价格时返回 {\"products\":[]}。"
 )
 
 
@@ -298,6 +297,9 @@ def _sanitize(raw, source_urls):
         return None
     brand = str(raw.get("brand") or "").strip() or name[:2]
     category = str(raw.get("category") or "").strip()[:16] or "其他"
+    category = {"电脑": "笔记本", "智能家电": "家电", "穿戴": "智能穿戴", "耳机/音箱": "耳机"}.get(category, category)
+    if category not in SMART_CATEGORIES:
+        return None
     tier = TIER_MAP.get(str(raw.get("brandTier") or "").strip(), "popular")
     tags = [str(t).strip()[:8] for t in (raw.get("tags") or []) if str(t).strip()][:4]
     highlights = [str(h).strip()[:40] for h in (raw.get("highlights") or []) if str(h).strip()][:3]
