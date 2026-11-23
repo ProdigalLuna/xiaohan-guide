@@ -6,6 +6,7 @@
   var PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/";
   var FILES = [
     "engine.py",
+    "smart_agent.py",
     "db.py",
     "linkparse.py",
     "xlsx_export.py",
