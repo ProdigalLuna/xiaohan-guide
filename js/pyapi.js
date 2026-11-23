@@ -140,6 +140,69 @@
     return toResponse(JSON.parse(text));
   }
 
+  // ------------------------------------------------------------ 浏览器端联网
+  // Pyodide 沙箱里的 Python 不能联网（socket 被禁用 + 跨域限制），
+  // 因此商品链接的抓取由浏览器原生 fetch 通过公共 CORS 代理完成，
+  // 抓到的原始文本放进 payload._net 交给 Python 引擎解析。
+  var SHOP_RE = /(?:https?:\/\/)?(?:[a-z0-9-]+\.)?(?:jd\.com|3\.cn|taobao\.com|tmall\.com|tb\.cn)[^\s\u4e00-\u9fa5<>"']*/i;
+  var NET_PROXIES = [
+    function (u) { return "https://api.allorigins.win/raw?url=" + encodeURIComponent(u); },
+    function (u) { return "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u); },
+    function (u) { return "https://corsproxy.io/?" + encodeURIComponent(u); }
+  ];
+
+  async function netText(url, ms) {
+    if (!realFetch) return "";
+    for (var i = 0; i < NET_PROXIES.length; i++) {
+      var ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
+      var timer = ctl ? setTimeout(function () { ctl.abort(); }, ms || 7000) : null;
+      try {
+        var opts = { cache: "no-store" };
+        if (ctl) opts.signal = ctl.signal;
+        var resp = await realFetch(NET_PROXIES[i](url), opts);
+        if (timer) clearTimeout(timer);
+        if (resp && resp.ok) {
+          var text = await resp.text();
+          // allorigins 的 /get 端点返回 {contents:"..."}，这里统一取出正文
+          if (text && text.charAt(0) === "{") {
+            try {
+              var obj = JSON.parse(text);
+              if (obj && typeof obj.contents === "string") text = obj.contents;
+            } catch (e) { /* 保留原文本 */ }
+          }
+          if (text && text.length > 60) return text;
+        }
+      } catch (e) {
+        if (timer) clearTimeout(timer);
+      }
+    }
+    return "";
+  }
+
+  function shopItemId(url) {
+    var m = url.match(/[?&](?:id|itemId|sku|wareId)=(\d{6,})/i)
+         || url.match(/\/(\d{8,})\.html/)
+         || url.match(/\/(\d{8,})/);
+    return m ? m[1] : "";
+  }
+
+  async function prefetchLink(message) {
+    var m = (message || "").match(SHOP_RE);
+    if (!m) return null;
+    var url = m[0].replace(/[.,;:)\]"']+$/, "");
+    if (!/^https?:/i.test(url)) url = "https://" + url;
+    var id = shopItemId(url);
+    var isJD = /jd\.com|3\.cn/i.test(url);
+    var out = { url: url, itemId: id, platform: isJD ? "jd" : "taobao", page: "", search: "" };
+    out.page = await netText(url, 7000);
+    if (id) {
+      var label = isJD ? "京东" : "淘宝";
+      var q = encodeURIComponent(label + " " + id + " 商品 型号 参数");
+      out.search = await netText("https://www.bing.com/search?q=" + q + "&count=10&setlang=zh-CN", 7000);
+    }
+    return out;
+  }
+
   // ------------------------------------------------------------ fetch 接管
   window.fetch = function (input, init) {
     var url = typeof input === "string" ? input : (input && input.url) || "";
@@ -154,6 +217,17 @@
       var method = (init && init.method) || (input && input.method) || "GET";
       var body = (init && init.body) || "";
       if (typeof body !== "string") body = "";
+      if (p.indexOf("/api/chat") !== -1 && String(method).toUpperCase() === "POST") {
+        return (async function () {
+          try {
+            var payload = JSON.parse(body);
+            var net = await prefetchLink(payload.message || "");
+            if (net) payload._net = net;
+            body = JSON.stringify(payload);
+          } catch (e) { /* 预抓取失败不影响对话 */ }
+          return callBridge(String(method).toUpperCase(), parsed.pathname + parsed.search, body);
+        })();
+      }
       return callBridge(String(method).toUpperCase(), parsed.pathname + parsed.search, body);
     }
     return realFetch ? realFetch(input, init) : Promise.reject(new Error("fetch unavailable"));
