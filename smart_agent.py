@@ -204,29 +204,31 @@ def _apply_net(info, net, platform):
         return info
     page = net.get("page") or ""
     search = net.get("search") or ""
+    text = net.get("text") or ""          # 云端已转成纯文本的商品页正文
+    cloud_title = net.get("title") or ""  # 云端已清洗的真实商品标题
     item_id = net.get("itemId") or ""
 
-    # 商品页文本：浏览器抓来的 og:title 优先（Pyodide 内 parse_link 联网必失败，
-    #  titles 可能来自其它兜底，不可信）
-    net_title = ""
-    if page:
+    # 标题：云端 title 优先（服务端抓取，可信），其次从页面 meta 提取。
+    # Pyodide 内 parse_link 联网必失败，它的 title 可能来自兜底，不可信，一律覆盖。
+    net_title = linkparse._clean_title(html.unescape(cloud_title)) if cloud_title else ""
+    if not net_title and page:
         og = linkparse._meta(page, ["og:title", "twitter:title"])
         if not og:
             m = re.search(r"<title[^>]*>(.*?)</title>", page, re.S | re.I)
             og = re.sub(r"<[^>]+>", "", m.group(1)) if m else ""
         net_title = linkparse._clean_title(html.unescape(og))
-        if linkparse._valid_title(net_title):
-            info["title"] = net_title
-            info["source"] = "商品页"
-        if not info.get("price"):
-            info["price"] = linkparse._price_from(page)
-        if not info.get("spec"):
-            desc = linkparse._meta(page, ["description", "og:description"])
-            if desc and len(desc) >= 8 and not linkparse._is_seo_blob(desc):
-                info["spec"] = desc[:180]
+    if linkparse._valid_title(net_title):
+        info["title"] = net_title
+        info["source"] = "商品页"
+    if page and not info.get("price"):
+        info["price"] = linkparse._price_from(page)
+    if page and not info.get("spec"):
+        desc = linkparse._meta(page, ["description", "og:description"])
+        if desc and len(desc) >= 8 and not linkparse._is_seo_blob(desc):
+            info["spec"] = desc[:180]
 
-    # 搜索文本：补标题 + 补价格 + 补参数
-    blob = search or page
+    # 参数来源优先级：商品页纯文本 > 搜索文本 > 商品页 HTML > 标题
+    blob = text or search or page
     if not info.get("title") and blob:
         title = _title_from_search_text(blob, item_id)
         if title:
@@ -244,12 +246,17 @@ def _apply_net(info, net, platform):
                 info["price"] = float(m.group(1))
                 break
     if info.get("title") and not info.get("specs"):
-        specs = linkparse._specs_from_text(blob)
-        if not specs:
-            specs = linkparse._specs_from_text(info["title"])
-        if specs:
-            info["specs"] = linkparse._order_specs(specs)
-            info["specSource"] = "搜索摘要"
+        # 逐个来源尝试，取参数最全的那份
+        best = {}
+        for src in (text, search, page, info["title"]):
+            if not src:
+                continue
+            specs = linkparse._specs_from_text(src)
+            if len(specs) > len(best):
+                best = specs
+        if best:
+            info["specs"] = linkparse._order_specs(best)
+            info["specSource"] = "公开页面"
             info["spec"] = linkparse.format_specs(info["specs"])
     return info
 

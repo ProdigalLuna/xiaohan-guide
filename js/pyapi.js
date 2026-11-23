@@ -145,10 +145,12 @@
   // 因此商品链接的抓取由浏览器原生 fetch 通过公共 CORS 代理完成，
   // 抓到的原始文本放进 payload._net 交给 Python 引擎解析。
   var SHOP_RE = /(?:https?:\/\/)?(?:[a-z0-9-]+\.)?(?:jd\.com|3\.cn|taobao\.com|tmall\.com|tb\.cn)[^\s\u4e00-\u9fa5<>"']*/i;
+  // 云端抓取服务：服务端联网，不受浏览器跨域与电商反爬限制（首选）
+  var CLOUD_SCRAPE = "https://xiaohan-scraper.app.workbuddy.host/api/scrape?sharecode=KGHMHUYCD7";
+  // 公共代理作为兜底（多数已失效，仅云端不可用时使用）
   var NET_PROXIES = [
     function (u) { return "https://api.allorigins.win/raw?url=" + encodeURIComponent(u); },
-    function (u) { return "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u); },
-    function (u) { return "https://corsproxy.io/?" + encodeURIComponent(u); }
+    function (u) { return "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u); }
   ];
 
   async function netText(url, ms) {
@@ -193,7 +195,36 @@
     if (!/^https?:/i.test(url)) url = "https://" + url;
     var id = shopItemId(url);
     var isJD = /jd\.com|3\.cn/i.test(url);
-    var out = { url: url, itemId: id, platform: isJD ? "jd" : "taobao", page: "", search: "" };
+    var platform = isJD ? "jd" : "taobao";
+
+    // 首选：云端抓取（服务端联网，能真正拿到商品数据）
+    if (realFetch) {
+      try {
+        var ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
+        var timer = ctl ? setTimeout(function () { ctl.abort(); }, 20000) : null;
+        var resp = await realFetch(CLOUD_SCRAPE, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: url, itemId: id, platform: platform }),
+          cache: "no-store",
+          signal: ctl ? ctl.signal : undefined
+        });
+        if (timer) clearTimeout(timer);
+        if (resp && resp.ok) {
+          var data = await resp.json();
+          if (data && (data.title || data.text || data.page)) {
+            return {
+              url: url, itemId: id, platform: platform,
+              title: data.title || "", text: data.text || "",
+              page: data.page || "", search: data.search || ""
+            };
+          }
+        }
+      } catch (e) { /* 云端失败，回退到公共代理 */ }
+    }
+
+    // 兜底：浏览器公共代理（多数已失效）
+    var out = { url: url, itemId: id, platform: platform, page: "", search: "", text: "" };
     out.page = await netText(url, 7000);
     if (id) {
       var label = isJD ? "京东" : "淘宝";
