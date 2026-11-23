@@ -7,6 +7,8 @@
 """
 
 import hashlib
+import html
+import re
 from datetime import datetime
 
 import db
@@ -170,9 +172,92 @@ def _markdown_table(anchor, info, competitors, title):
     return lines
 
 
-def handle_link(user_id, message, url, platform):
+def _title_from_search_text(text, item_id):
+    """从浏览器抓来的搜索页文本里挑出机型标题。"""
+    if not text:
+        return ""
+    candidates = []
+    for line in re.split(r"[\r\n]+", text):
+        line = linkparse._plain(line)
+        if 8 <= len(line) <= 120 and not linkparse._is_seo_blob(line):
+            candidates.append(line)
+    # 优先含商品 ID 的行
+    if item_id:
+        for line in candidates:
+            if item_id in line:
+                cleaned = linkparse._clean_title(line)
+                if len(cleaned) >= 6:
+                    return cleaned
+    # 其次含常见机型关键词的行
+    keywords = ("Ultra", "Pro", "Max", "Plus", "手机", "骁龙", "天玑", "iPhone", "Mate")
+    for line in candidates:
+        if any(k.lower() in line.lower() for k in keywords):
+            cleaned = linkparse._clean_title(line)
+            if len(cleaned) >= 6:
+                return cleaned
+    return ""
+
+
+def _apply_net(info, net, platform):
+    """把浏览器抓来的商品页/搜索文本解析成 title/price/specs，补进 info。"""
+    if not net or not isinstance(net, dict):
+        return info
+    page = net.get("page") or ""
+    search = net.get("search") or ""
+    item_id = net.get("itemId") or ""
+
+    # 商品页文本：浏览器抓来的 og:title 优先（Pyodide 内 parse_link 联网必失败，
+    #  titles 可能来自其它兜底，不可信）
+    net_title = ""
+    if page:
+        og = linkparse._meta(page, ["og:title", "twitter:title"])
+        if not og:
+            m = re.search(r"<title[^>]*>(.*?)</title>", page, re.S | re.I)
+            og = re.sub(r"<[^>]+>", "", m.group(1)) if m else ""
+        net_title = linkparse._clean_title(html.unescape(og))
+        if linkparse._valid_title(net_title):
+            info["title"] = net_title
+            info["source"] = "商品页"
+        if not info.get("price"):
+            info["price"] = linkparse._price_from(page)
+        if not info.get("spec"):
+            desc = linkparse._meta(page, ["description", "og:description"])
+            if desc and len(desc) >= 8 and not linkparse._is_seo_blob(desc):
+                info["spec"] = desc[:180]
+
+    # 搜索文本：补标题 + 补价格 + 补参数
+    blob = search or page
+    if not info.get("title") and blob:
+        title = _title_from_search_text(blob, item_id)
+        if title:
+            info["title"] = title
+            info["source"] = "搜索引擎"
+    if not info.get("price"):
+        # 宽松匹配：从搜索文本/描述里找“6499元”“到手价6499”等
+        for source in (search, page):
+            if not source:
+                continue
+            desc = linkparse._meta(source, ["description", "og:description"]) or ""
+            blob = source + " " + desc
+            m = re.search(r"(?<!\d)([1-9]\d{2,5})\s*元(?!\d)", blob)
+            if m:
+                info["price"] = float(m.group(1))
+                break
+    if info.get("title") and not info.get("specs"):
+        specs = linkparse._specs_from_text(blob)
+        if not specs:
+            specs = linkparse._specs_from_text(info["title"])
+        if specs:
+            info["specs"] = linkparse._order_specs(specs)
+            info["specSource"] = "搜索摘要"
+            info["spec"] = linkparse.format_specs(info["specs"])
+    return info
+
+
+def handle_link(user_id, message, url, platform, net=None):
     """链接入口：识别商品 → 静默搜索补全 → 展示结果 → 支持原样对比。"""
     info = linkparse.parse_link(url)
+    info = _apply_net(info, net, platform)
     title = (info.get("title") or "").strip()
     if not title:
         title = _recover_title(info, url, platform)
@@ -274,8 +359,8 @@ def handle_link(user_id, message, url, platform):
     }
 
 
-def handle_chat(user_id, message, dialect_hint=None):
+def handle_chat(user_id, message, dialect_hint=None, net=None):
     url, platform = linkparse.find_link(message or "")
     if url:
-        return handle_link(user_id, message, url, platform)
+        return handle_link(user_id, message, url, platform, net=net)
     return _patch_reply(engine.handle_chat(user_id, message, dialect_hint))
